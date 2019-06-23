@@ -44,10 +44,10 @@ static inline void cb_free(cbytes *b) {
 static inline int cb_accomodate(cbytes *b, size_t inc) {
   if (b->cap >= (b->sz + inc))
     return 0;
-  cbytes *b_ = realloc(b, b->cap * 2);
+  uint8_t *b_ = realloc(b->data, b->cap * 2);
   if (!b_)
     return -1;
-  b = b_;
+  b->data = b_;
   b->cap *= 2;
   return 0;
 }
