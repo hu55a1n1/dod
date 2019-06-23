@@ -23,10 +23,10 @@ typedef struct {
 } cbytes;
 
 static inline cbytes *cb_init(size_t sz) {
-  cbytes *cb = malloc(sizeof(*cb));
+  cbytes *cb = (cbytes *)malloc(sizeof(*cb));
   if (!cb)
     return NULL;
-  cb->data = malloc(sz);
+  cb->data = (uint8_t *)malloc(sz);
   if (!cb->data) {
     free(cb);
     return NULL;
@@ -44,7 +44,7 @@ static inline void cb_free(cbytes *b) {
 static inline int cb_accomodate(cbytes *b, size_t inc) {
   if (b->cap >= (b->sz + inc))
     return 0;
-  uint8_t *b_ = realloc(b->data, b->cap * 2);
+  uint8_t *b_ = (uint8_t *)realloc(b->data, b->cap * 2);
   if (!b_)
     return -1;
   b->data = b_;
