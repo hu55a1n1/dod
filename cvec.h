@@ -4,7 +4,8 @@
 #include "cbytes.h"
 
 #define vec_push_back(_v_, _val_) vec_push_backl(_v_, _val_, sizeof(*_val_))
-#define vec_pop(_v_, _val_) vec_popl(_v_, _val_, sizeof(*_val_))
+#define vec_back(_v_, _val_)                                                   \
+  cb_readl_((_v_)->b, ((_v_)->l - 1) * sizeof(*_val_), _val_, sizeof(*_val_))
 #define vec_find(_v_, _val_) vec_findl(_v_, _val_, sizeof(*_val_))
 
 typedef struct {
@@ -19,10 +20,7 @@ static inline int vec_push_backl(vec *v, void *val, size_t l) {
   return cb_writel_(v->b, val, l);
 }
 
-static inline int vec_popl(vec *v, void *val, size_t l) {
-  v->l--;
-  return cb_readl_(v->b, v->l * l, val, l);
-}
+static inline void vec_pop(vec *v) { v->l--; }
 
 static inline size_t vec_size(vec *v) { return v->l; }
 
