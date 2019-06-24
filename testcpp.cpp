@@ -3,7 +3,7 @@
 #include <random>
 #include <vector>
 
-#define CVEC_MAX 10000000
+#define CVEC_MAX 100000000
 
 typedef struct {
   int x;
@@ -13,7 +13,7 @@ typedef struct {
 void test_cvec() {
   point_t p;
   vec v;
-  vec_init(&v);
+  vec_init(&v, point_t, 1024);
   srand(time(NULL));
   for (int j = 0; j < CVEC_MAX; ++j) {
     p.x = std::rand();

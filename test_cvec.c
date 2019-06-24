@@ -12,7 +12,7 @@ int main() {
   point_t p;
 
   vec v;
-  vec_init(&v);
+  vec_init(&v, point_t, 128);
   vec_push_back(&v, &p1);
   vec_push_back(&v, &p2);
   vec_push_back(&v, &p3);
