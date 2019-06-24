@@ -5,7 +5,7 @@
 
 #define vec_push_back(_v_, _val_) vec_push_backl(_v_, _val_, sizeof(*_val_))
 #define vec_back(_v_, _val_)                                                   \
-  cb_readl_((_v_)->b, ((_v_)->l - 1) * sizeof(*_val_), _val_, sizeof(*_val_))
+  cb_read((_v_)->b, ((_v_)->l - 1) * sizeof(*_val_), _val_)
 #define vec_find(_v_, _val_) vec_findl(_v_, _val_, sizeof(*_val_))
 #define vec_empty(_v_) ((_v_)->l == 0)
 
@@ -21,7 +21,10 @@ static inline int vec_push_backl(vec *v, void *val, size_t l) {
   return cb_writel_(v->b, val, l);
 }
 
-static inline void vec_pop(vec *v) { v->l--; }
+static inline void vec_pop(vec *v) {
+  v->l--;
+  v->b->sz -= v->l ? (v->b->sz / v->l) : 0;
+}
 
 static inline size_t vec_size(vec *v) { return v->l; }
 
@@ -33,11 +36,12 @@ static inline size_t vec_findl(vec *v, void *val, size_t l) {
 }
 
 static inline int vec_erase(vec *v, size_t pos) {
-  size_t sz = (v->b->sz / v->l);
+  size_t sz = v->l ? (v->b->sz / v->l) : 0;
   pos *= sz;
   for (size_t i = pos; i + sz < v->b->sz; i += sz)
     memcpy(v->b->data + i, v->b->data + i + sz, sz);
   v->l--;
+  v->b->sz -= sz;
   return 0;
 }
 

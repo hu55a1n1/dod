@@ -21,6 +21,7 @@ int main() {
   size_t found = vec_find(&v, &p3);
   (found == v.l + 1) ? printf("Not found!\n")
                      : printf("Found at index %lu\n", found);
+  vec_erase(&v, found);
 
   size_t vl = vec_size(&v);
   for (int i = 0; i < vl; ++i) {
@@ -28,5 +29,6 @@ int main() {
     printf("(x, y) === (%d, %d)\n", p.x, p.y);
     vec_pop(&v);
   }
+  //  if (vec_empty(&v)) printf("Empty\n");
   return 0;
 }
