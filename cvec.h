@@ -37,7 +37,7 @@ static inline void vec_pop(vec *v) {
 static inline size_t vec_size(vec *v) { return v->l; }
 
 static inline size_t vec_findl(vec *v, void *val, size_t l) {
-  for (int i = 0; i < v->l; i++)
+  for (size_t i = 0; i < v->l; i++)
     if (!memcmp(v->b->data + (i * l), val, l))
       return i;
   return v->l + 1;

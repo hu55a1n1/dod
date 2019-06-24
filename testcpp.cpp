@@ -21,7 +21,7 @@ void test_cvec() {
     vec_push_back(&v, &p);
   }
   size_t vl = v.l;
-  for (int i = 0; i < vl; ++i) {
+  for (size_t i = 0; i < vl; ++i) {
     vec_back(&v, &p);
     //    printf("x = %d, y = %d\n", p.x, p.y);
     vec_pop(&v);
@@ -38,8 +38,9 @@ void test_veccpp() {
     v.push_back(p);
   }
   size_t vl = v.size();
-  for (int i = 0; i < vl; ++i) {
+  for (size_t i = 0; i < vl; ++i) {
     auto &p = v.back();
+    (void)p;
     //    printf("x = %d, y = %d\n", p.x, p.y);
     v.pop_back();
   }
