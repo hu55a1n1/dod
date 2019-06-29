@@ -7,4 +7,4 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -O3")
 
 add_executable(test_cvec test_cvec.c cvec.h)
 
-add_executable(testcpp testcpp.cpp cvec.h)
+add_executable(testcpp testcpp.cpp cvec.h cvector.h)
