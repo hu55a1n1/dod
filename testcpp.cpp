@@ -5,7 +5,7 @@
 #include <random>
 #include <vector>
 
-#define CVEC_MAX 10000000
+#define CVEC_MAX 100000000
 
 typedef struct {
   int x;
@@ -14,19 +14,19 @@ typedef struct {
 
 static void test_cvec() {
   point_t p;
-  vec v;
-  vec_init(&v, point_t, 1024);
+  cvec_t v;
+  cvec_init(&v, point_t, 1024);
   srand(time(NULL));
   for (int j = 0; j < CVEC_MAX; ++j) {
     p.x = std::rand();
     p.y = std::rand();
-    vec_push_back(&v, &p);
+    cvec_push_back(&v, &p);
   }
   size_t vl = v.l;
   for (size_t i = 0; i < vl; ++i) {
-    vec_pop(&v);
+    cvec_pop(&v);
   }
-  vec_free(&v);
+  cvec_free(&v);
 }
 
 static void test_cvector() {
@@ -71,7 +71,7 @@ int main() {
   test_cvec();
   end = clock();
   time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("cvec = %f\n", time_spent);
+  printf("cvec_t = %f\n", time_spent);
 
   begin = clock();
   test_cvector();
