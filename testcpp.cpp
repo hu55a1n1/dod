@@ -5,7 +5,7 @@
 #include <random>
 #include <vector>
 
-#define CVEC_MAX 100000
+#define CVEC_MAX 10000000
 
 typedef struct {
   int x;
@@ -24,13 +24,8 @@ static void test_cvec() {
   }
   size_t vl = v.l;
   for (size_t i = 0; i < vl; ++i) {
-    //    vec_back(&v, &p);
-    //    //    printf("x = %d, y = %d\n", p.x, p.y);
-    //    vec_pop(&v);
-    vec_erase(&v, 0);
+    vec_pop(&v);
   }
-  if (vec_empty(&v))
-    printf("empty\n");
   vec_free(&v);
 }
 
@@ -45,13 +40,8 @@ static void test_cvector() {
   }
   size_t vl = vector_size(v);
   for (size_t i = 0; i < vl; ++i) {
-    //    vec_back(&v, &p);
-    //    //    printf("x = %d, y = %d\n", p.x, p.y);
-    //    vec_pop(&v);
-    vector_erase(v, 0);
+    vector_pop_back(v);
   }
-  if (vector_empty(v))
-    printf("empty\n");
   vector_free(v);
 }
 
@@ -66,15 +56,8 @@ static void test_veccpp() {
   }
   size_t vl = v.size();
   for (size_t i = 0; i < vl; ++i) {
-    //    auto &p = v.back();
-    //    (void)p;
-    //    //    printf("x = %d, y = %d\n", p.x, p.y);
-    //    v.pop_back();
-    v.erase(v.begin());
+    v.pop_back();
   }
-
-  if (v.empty())
-    printf("empty\n");
 }
 
 int main() {
