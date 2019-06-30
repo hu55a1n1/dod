@@ -31,7 +31,7 @@ static inline int vec_push_backl(vec *v, void *val, size_t l) {
 static inline void vec_pop(vec *v) {
   if (v->l) {
     v->l--;
-    cb_set_sz(v->b, cb_get_sz(v->b) - v->szmem);
+    v->b->sz -= v->szmem;
   }
 }
 
@@ -39,19 +39,19 @@ static inline size_t vec_size(vec *v) { return v->l; }
 
 static inline size_t vec_findl(vec *v, void *val, size_t l) {
   for (size_t i = 0; i < v->l; i++)
-    if (!memcmp(v->b + (i * l), val, l))
+    if (!memcmp(v->b->b + (i * l), val, l))
       return i;
   return v->l + 1;
 }
 
 static inline int vec_erase(vec *v, size_t pos) {
-  if (!v->l || pos >= cb_get_sz(v->b))
+  if (!v->l || pos >= v->b->sz)
     return -1;
-  size_t li = cb_get_sz(v->b) - v->szmem;
+  size_t li = v->b->sz - v->szmem;
   for (size_t i = pos * v->szmem; i < li; i += v->szmem)
-    memcpy(v->b + i, v->b + i + v->szmem, v->szmem);
+    memcpy(v->b->b + i, v->b->b + i + v->szmem, v->szmem);
   v->l--;
-  cb_set_sz(v->b, cb_get_sz(v->b) - v->szmem);
+  v->b->sz -= v->szmem;
   return 0;
 }
 

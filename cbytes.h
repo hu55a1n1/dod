@@ -14,64 +14,50 @@
       fprintf(_f_, "%02x", _b_->data[i]);                                      \
     fprintf(_f_, "\n");                                                        \
   } while (0)
-#define cb_set_sz(_b_, _sz_)                                                   \
-  do {                                                                         \
-    ((size_t *)_b_)[-2] = _sz_;                                                \
-  } while (0)
-#define cb_set_p(_b_, _p_)                                                     \
-  do {                                                                         \
-    (_b_) -= (2 * sizeof(size_t));                                             \
-    (_b_) = _p_;                                                               \
-    (_b_) += (2 * sizeof(size_t));                                             \
-  } while (0)
-#define cb_set_cap(_b_, _cap_)                                                 \
-  do {                                                                         \
-    ((size_t *)_b_)[-1] = _cap_;                                               \
-  } while (0)
-#define cb_get_sz(_b_) ((_b_) ? ((size_t *)_b_)[-2] : 0)
-#define cb_get_cap(_b_) ((_b_) ? ((size_t *)_b_)[-1] : 0)
-#define cb_getp(_b_) ((_b_) ? ((size_t *)_b_) - 2 : 0)
 
-typedef unsigned char cbytes;
+typedef struct {
+  size_t sz;
+  size_t cap;
+  unsigned char b[];
+} cbytes;
 
 static inline cbytes *cb_init(size_t sz) {
-  cbytes *cb = (unsigned char *)malloc(sz + (sizeof(size_t) * 2));
+  cbytes *cb = (cbytes *)malloc(sizeof(*cb) + sz);
   if (!cb) {
     free(cb);
     return NULL;
   }
-  cb += (sizeof(size_t) * 2);
-  cb_set_sz(cb, 0);
-  cb_set_cap(cb, sz);
+  cb->sz = 0;
+  cb->cap = sz;
   return cb;
 }
 
-static inline void cb_free(cbytes *b) { free(cb_getp(b)); }
+static inline void cb_free(cbytes *b) { free(b); }
 
 static inline int cb_accomodate(cbytes **b, size_t inc) {
-  if (cb_get_cap(*b) >= (cb_get_sz(*b) + inc))
+  if ((*b)->cap >= ((*b)->sz + inc))
     return 0;
-  cbytes *b_ = (cbytes *)realloc(cb_getp(*b), cb_get_cap(*b) * 2);
+  cbytes *b_ = (cbytes *)realloc(*b, sizeof(*b_) + ((*b)->cap * 2));
   if (!b_)
     return -1;
-  cb_set_p(*b, b_);
-  cb_set_cap(*b, cb_get_cap(*b) * 2);
+  *b = b_;
+  (*b)->cap *= 2;
   return 0;
 }
 
 static inline int cb_writel_(cbytes **b, void *v, size_t l) {
   if (cb_accomodate(b, l) != 0)
     return -1;
-  memcpy(*b + cb_get_sz(*b), v, l);
-  cb_set_sz(*b, cb_get_sz(*b) + l);
+  memcpy((*b)->b + (*b)->sz, v, l);
+  (*b)->sz += l;
   return 0;
 }
 
 static inline int cb_readl_(cbytes *b, size_t pos, void *v, size_t l) {
-  if (pos >= cb_get_sz(b))
+  if (pos >= b->sz)
     return -1;
-  memcpy(v, b + pos, l);
-  cb_set_sz(b, cb_get_sz(b) + l);
+  memcpy(v, b->b + pos, l);
+  b->sz += l;
   return 0;
 }
 
