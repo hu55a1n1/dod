@@ -25,7 +25,7 @@ static inline void vec_initl(vec *v, size_t tsz, size_t rsz) {
 
 static inline int vec_push_backl(vec *v, void *val, size_t l) {
   v->l++;
-  return cb_writel_(v->b, val, l);
+  return cb_writel_(&v->b, val, l);
 }
 
 static inline void vec_pop(vec *v) {
