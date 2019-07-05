@@ -6,3 +6,4 @@ set(CMAKE_C_FLAGS "-O3 -g -pedantic -Wall -Wextra -Wshadow -Wpointer-arith -Wcas
         -Wstrict-prototypes -Wmissing-prototypes")
 
 add_executable(test_ucvec test_ucvec.c ucvec.h ucbytes.h)
+add_executable(test_ucdict test_ucdict.c ucvec.h ucbytes.h ucdict.h)
