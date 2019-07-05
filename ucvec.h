@@ -1,5 +1,5 @@
-#ifndef uCUTILS_VECTOR_H
-#define uCUTILS_VECTOR_H
+#ifndef uCUTILS_VECT_H
+#define uCUTILS_VECT_H
 
 #include "ucbytes.h"
 
@@ -55,4 +55,4 @@ static inline int ucvec_erase(ucvec_t *v, size_t pos) {
   return 0;
 }
 
-#endif // uCUTILS_VECTOR_H
+#endif // uCUTILS_VECT_H
