@@ -5,23 +5,24 @@
 static void test_ucdict() {
   int v;
   char k[6] = {0};
-  ucdict_t *d = ucdict_new(char[6], int, 5);
+  ucdict_t d;
+  ucdict_init(&d, char[6], int, 5);
   srand(time(NULL));
   for (int j = 0; j < 5; ++j) {
     v = rand();
     sprintf(k, "key %d", j + 1);
-    ucdict_push_back(d, &k, &v);
+    ucdict_push_back(&d, &k, &v);
     printf("(%s, %d)\n", k, v);
   }
   printf("----------\n");
-  size_t dl = ucdict_size(d);
+  size_t dl = ucdict_size(&d);
   for (size_t i = 0; i < dl; ++i) {
-    ucdict_back(d, &k, &v);
-    ucdict_pop(d);
+    ucdict_back(&d, &k, &v);
+    ucdict_pop(&d);
     printf("(%s, %d)\n", k, v);
   }
-  printf("Size: %lu\n", ucdict_size(d));
-  ucdict_free(d);
+  printf("Size: %lu\n", ucdict_size(&d));
+  ucdict_free(&d);
 }
 
 int main() {
