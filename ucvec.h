@@ -3,7 +3,7 @@
 
 #include "ucbytes.h"
 
-#define ucvec_init(_v_, _t_, _rsz_) ucvec_initl(_v_, sizeof(_t_), _rsz_)
+#define ucvec_init(_v_, _t_, _n_) ucvec_initl(_v_, sizeof(_t_), _n_)
 #define ucvec_free(_v_) ucbytes_free((_v_)->b)
 #define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
 #define ucvec_back(_v_, _val_)                                                 \
@@ -17,8 +17,8 @@ typedef struct {
   size_t szmem;
 } ucvec_t;
 
-static inline void ucvec_initl(ucvec_t *v, size_t tsz, size_t rsz) {
-  v->b = ucbytes_init(rsz);
+static inline void ucvec_initl(ucvec_t *v, size_t tsz, size_t n) {
+  v->b = ucbytes_init(tsz * n);
   v->l = 0;
   v->szmem = tsz;
 }
