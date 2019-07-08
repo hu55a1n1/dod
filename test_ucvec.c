@@ -1,34 +1,41 @@
 #include "ucvec.h"
+#include <assert.h>
 #include <stdio.h>
-#include <time.h>
 
 typedef struct {
   int x;
   int y;
-} point_t;
+} struct_t;
 
-static void test_ucvec() {
-  point_t p;
-  ucvec_t v;
-  ucvec_init(&v, point_t, 1024);
-  srand(time(NULL));
-  for (int j = 0; j < 100000000; ++j) {
-    p.x = rand();
-    p.y = rand();
-    ucvec_push_back(&v, &p);
-  }
-  size_t vl = v.l;
-  for (size_t i = 0; i < vl; ++i) {
-    ucvec_pop(&v);
-  }
-  ucvec_free(&v);
+#define test_ucvec_type(type, ...)                                             \
+  do {                                                                         \
+    type arr[] = {__VA_ARGS__};                                                \
+    const int sz = (sizeof(arr) / sizeof(type));                               \
+    size_t i = 0;                                                              \
+    type j = {0};                                                              \
+    ucvec_t v;                                                                 \
+    ucvec_init(&v, type, sz);                                                  \
+    for (i = 0; i < sz; i++)                                                   \
+      ucvec_push_back(&v, arr + i);                                            \
+    for (i = 0; i < sz; i++) {                                                 \
+      ucvec_back(&v, &j);                                                      \
+      ucvec_pop(&v);                                                           \
+      assert(!memcmp(&j, &arr[sz - i - 1], sizeof(j)));                        \
+    }                                                                          \
+    ucvec_free(&v);                                                            \
+  } while (0)
+
+static void test_ucvec_types() {
+  test_ucvec_type(int, 1, 2, 3, 4, 5);
+  test_ucvec_type(float, 1.0, 2.0, 3.0, 4.0, 5.0);
+  test_ucvec_type(struct_t, {.x = 1, .y = 2}, {.x = 3, .y = 4},
+                  {.x = 5, .y = 6}, {.x = 7, .y = 8}, {.x = 9, .y = 10});
+  test_ucvec_type(char *, "str1", "str2", "str3", "str4", "str5");
+  typedef char str5[5];
+  test_ucvec_type(str5, "str1", "str2", "str3", "str4", "str5");
 }
 
 int main() {
-  clock_t begin = clock();
-  test_ucvec();
-  clock_t end = clock();
-  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
-  printf("Took %f secs...\n", time_spent);
+  test_ucvec_types();
   return 0;
 }
