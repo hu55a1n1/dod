@@ -6,7 +6,8 @@
 #define ucvec_new(_t_, _n_) ucvec_newl(sizeof(_t_), _n_)
 #define ucvec_free(_v_)                                                        \
   do {                                                                         \
-    ucbytes_free((_v_)->b);                                                    \
+    if ((_v_) != NULL)                                                         \
+      ucbytes_free((_v_)->b);                                                  \
     free(_v_);                                                                 \
   } while (0)
 #define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
@@ -25,6 +26,10 @@ static inline ucvec_t *ucvec_newl(size_t tsz, size_t n) {
   ucvec_t *v = malloc(sizeof(*v));
   if (v) {
     v->b = ucbytes_new(tsz * n);
+    if (!v->b) {
+      free(v);
+      return NULL;
+    }
     v->l = 0;
     v->szmem = tsz;
   }

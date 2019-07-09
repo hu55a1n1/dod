@@ -6,8 +6,10 @@
 #define ucdict_new(_tk_, _tv_, _n_) ucdict_newl(sizeof(_tk_), sizeof(_tv_), _n_)
 #define ucdict_free(_d_)                                                       \
   do {                                                                         \
-    ucvec_free((_d_)->keys);                                                   \
-    ucvec_free((_d_)->vals);                                                   \
+    if ((_d_) != NULL) {                                                       \
+      ucvec_free((_d_)->keys);                                                 \
+      ucvec_free((_d_)->vals);                                                 \
+    }                                                                          \
     free(_d_);                                                                 \
   } while (0)
 #define ucdict_size(_d_) ((_d_)->keys->l)
@@ -34,14 +36,24 @@ static inline ucdict_t *ucdict_newl(size_t ksz, size_t vsz, size_t nmemb) {
   if (d) {
     d->keys = ucvec_newl(ksz, ksz * nmemb);
     d->vals = ucvec_newl(vsz, vsz * nmemb);
+    if (!d->keys || !d->vals) {
+      ucvec_free(d->keys);
+      ucvec_free(d->vals);
+      free(d);
+      return NULL;
+    }
   }
   return d;
 }
 
 static inline int ucdict_push_backl(ucdict_t *d, void *k, size_t kl, void *v,
                                     size_t vl) {
-  ucvec_push_backl(d->keys, k, kl);
-  ucvec_push_backl(d->vals, v, vl);
+  if (ucvec_push_backl(d->keys, k, kl) < 0) {
+    return -1;
+  } else if (ucvec_push_backl(d->vals, v, vl) < 0) {
+    ucvec_pop(d->keys);
+    return -1;
+  }
   return 0;
 }
 
