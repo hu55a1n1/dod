@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define ucbytes_free(_b_) free(_b_)
 #define ucbytes_write(_b_, _vptr_) ucbytes_writel_(_b_, _vptr_, sizeof(*_vptr_))
 #define ucbytes_read(_b_, _pos_, _vptr_)                                       \
   ucbytes_readl_(_b_, _pos_, _vptr_, sizeof(*_vptr_))
@@ -31,8 +32,6 @@ static inline ucbytes_t *ucbytes_new(size_t sz) {
   cb->cap = sz;
   return cb;
 }
-
-static inline void ucbytes_free(ucbytes_t *b) { free(b); }
 
 static inline int ucbytes_accomodate(ucbytes_t **b, size_t inc) {
   if ((*b)->cap >= ((*b)->sz + inc))
