@@ -3,12 +3,12 @@
 
 #include "ucvec.h"
 
-#define ucdict_init(_d_, _tk_, _tv_, _n_)                                      \
-  ucdict_initl(_d_, sizeof(_tk_), sizeof(_tv_), _n_)
+#define ucdict_new(_tk_, _tv_, _n_) ucdict_newl(sizeof(_tk_), sizeof(_tv_), _n_)
 #define ucdict_free(_d_)                                                       \
   do {                                                                         \
     ucvec_free((_d_)->keys);                                                   \
     ucvec_free((_d_)->vals);                                                   \
+    free(_d_);                                                                 \
   } while (0)
 #define ucdict_size(_d_) ((_d_)->keys->l)
 #define ucdict_push_back(_d_, _k_, _v_)                                        \
@@ -29,10 +29,13 @@ typedef struct {
   ucvec_t *vals;
 } ucdict_t;
 
-static inline void ucdict_initl(ucdict_t *d, size_t ksz, size_t vsz,
-                                size_t nmemb) {
-  d->keys = ucvec_newl(ksz, ksz * nmemb);
-  d->vals = ucvec_newl(vsz, vsz * nmemb);
+static inline ucdict_t *ucdict_newl(size_t ksz, size_t vsz, size_t nmemb) {
+  ucdict_t *d = malloc(sizeof(*d));
+  if (d) {
+    d->keys = ucvec_newl(ksz, ksz * nmemb);
+    d->vals = ucvec_newl(vsz, vsz * nmemb);
+  }
+  return d;
 }
 
 static inline int ucdict_push_backl(ucdict_t *d, void *k, size_t kl, void *v,
