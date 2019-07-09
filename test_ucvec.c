@@ -24,7 +24,7 @@ typedef struct {
     ucvec_free(v);                                                             \
   } while (0)
 
-static void test_ucvec_types() {
+static void test_ucvec_types(void) {
   test_ucvec_type(int, 1, 2, 3, 4, 5);
   test_ucvec_type(float, 1.0, 2.0, 3.0, 4.0, 5.0);
   test_ucvec_type(struct_t, {.x = 1, .y = 2}, {.x = 3, .y = 4},
@@ -34,7 +34,7 @@ static void test_ucvec_types() {
   test_ucvec_type(str5, "str1", "str2", "str3", "str4", "str5");
 }
 
-int main() {
+int main(void) {
   test_ucvec_types();
   return 0;
 }

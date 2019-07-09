@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <time.h>
 
-static void test_ucdict() {
+static void test_ucdict(void) {
   int v;
   char k[6] = {0};
   ucdict_t d;
@@ -25,7 +25,7 @@ static void test_ucdict() {
   ucdict_free(&d);
 }
 
-int main() {
+int main(void) {
   clock_t begin = clock();
   test_ucdict();
   clock_t end = clock();
