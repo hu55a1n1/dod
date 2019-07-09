@@ -10,19 +10,18 @@ typedef struct {
 #define test_ucvec_type(type, ...)                                             \
   do {                                                                         \
     type arr[] = {__VA_ARGS__};                                                \
-    const int sz = (sizeof(arr) / sizeof(type));                               \
+    const size_t sz = (sizeof(arr) / sizeof(type));                            \
     size_t i = 0;                                                              \
     type j = {0};                                                              \
-    ucvec_t v;                                                                 \
-    ucvec_init(&v, type, sz);                                                  \
+    ucvec_t *v = ucvec_new(type, sz);                                          \
     for (i = 0; i < sz; i++)                                                   \
-      ucvec_push_back(&v, arr + i);                                            \
+      ucvec_push_back(v, arr + i);                                             \
     for (i = 0; i < sz; i++) {                                                 \
-      ucvec_back(&v, &j);                                                      \
-      ucvec_pop(&v);                                                           \
+      ucvec_back(v, &j);                                                       \
+      ucvec_pop(v);                                                            \
       assert(!memcmp(&j, &arr[sz - i - 1], sizeof(j)));                        \
     }                                                                          \
-    ucvec_free(&v);                                                            \
+    ucvec_free(v);                                                             \
   } while (0)
 
 static void test_ucvec_types() {

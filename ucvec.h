@@ -3,8 +3,12 @@
 
 #include "ucbytes.h"
 
-#define ucvec_init(_v_, _t_, _n_) ucvec_initl(_v_, sizeof(_t_), _n_)
-#define ucvec_free(_v_) ucbytes_free((_v_)->b)
+#define ucvec_new(_t_, _n_) ucvec_newl(sizeof(_t_), _n_)
+#define ucvec_free(_v_)                                                        \
+  do {                                                                         \
+    ucbytes_free((_v_)->b);                                                    \
+    free(_v_);                                                                 \
+  } while (0)
 #define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
 #define ucvec_back(_v_, _val_)                                                 \
   ucbytes_read((_v_)->b, ((_v_)->l - 1) * (_v_)->szmem, _val_)
@@ -17,10 +21,14 @@ typedef struct {
   size_t szmem;
 } ucvec_t;
 
-static inline void ucvec_initl(ucvec_t *v, size_t tsz, size_t n) {
-  v->b = ucbytes_init(tsz * n);
-  v->l = 0;
-  v->szmem = tsz;
+static inline ucvec_t *ucvec_newl(size_t tsz, size_t n) {
+  ucvec_t *v = malloc(sizeof(*v));
+  if (v) {
+    v->b = ucbytes_init(tsz * n);
+    v->l = 0;
+    v->szmem = tsz;
+  }
+  return v;
 }
 
 static inline int ucvec_push_backl(ucvec_t *v, void *val, size_t l) {
