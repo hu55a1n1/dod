@@ -24,7 +24,7 @@ typedef struct {
 static inline ucvec_t *ucvec_newl(size_t tsz, size_t n) {
   ucvec_t *v = malloc(sizeof(*v));
   if (v) {
-    v->b = ucbytes_init(tsz * n);
+    v->b = ucbytes_new(tsz * n);
     v->l = 0;
     v->szmem = tsz;
   }

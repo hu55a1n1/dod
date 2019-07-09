@@ -21,7 +21,7 @@ typedef struct {
   unsigned char data[];
 } ucbytes_t;
 
-static inline ucbytes_t *ucbytes_init(size_t sz) {
+static inline ucbytes_t *ucbytes_new(size_t sz) {
   ucbytes_t *cb = (ucbytes_t *)malloc(sizeof(*cb) + sz);
   if (!cb) {
     free(cb);
