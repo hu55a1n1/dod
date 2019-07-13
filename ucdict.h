@@ -15,10 +15,10 @@
 #define ucdict_size(_d_) ((_d_)->keys->l)
 #define ucdict_push_back(_d_, _k_, _v_)                                        \
   ucdict_push_backl(_d_, _k_, sizeof(*_k_), _v_, sizeof(*_v_))
-#define ucdict_back(_d_, _k_, _v_)                                             \
+#define ucdict_back_read(_d_, _k_, _v_)                                        \
   do {                                                                         \
-    ucvec_back((_d_)->keys, _k_);                                              \
-    ucvec_back((_d_)->vals, _v_);                                              \
+    memcpy((_k_), ucvec_back((_d_)->keys), sizeof(*(_k_)));                    \
+    memcpy((_v_), ucvec_back((_d_)->vals), sizeof(*(_v_)));                    \
   } while (0)
 #define ucdict_pop(_d_)                                                        \
   do {                                                                         \

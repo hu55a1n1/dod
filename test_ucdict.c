@@ -5,7 +5,7 @@
 static void test_ucdict(void) {
   int v;
   char k[6] = {0};
-  ucdict_t *d = ucdict_new(char[6], int, 5);
+  ucdict_t *d = ucdict_new(char[6], int, 3);
   srand(time(NULL));
   for (int j = 0; j < 5; ++j) {
     v = rand();
@@ -16,7 +16,7 @@ static void test_ucdict(void) {
   printf("----------\n");
   size_t dl = ucdict_size(d);
   for (size_t i = 0; i < dl; ++i) {
-    ucdict_back(d, &k, &v);
+    ucdict_back_read(d, &k, &v);
     ucdict_pop(d);
     printf("(%s, %d)\n", k, v);
   }
