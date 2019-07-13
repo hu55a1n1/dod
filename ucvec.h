@@ -11,10 +11,23 @@
     free(_v_);                                                                 \
   } while (0)
 #define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
-#define ucvec_back(_v_, _val_)                                                 \
-  ucbytes_read((_v_)->b, ((_v_)->l - 1) * (_v_)->szmem, _val_)
 #define ucvec_find(_v_, _val_) ucvec_findl(_v_, _val_, (_v_)->szmem)
+
+// capacity
+#define ucvec_size(_v_) ((_v_)->l)
+//#define ucvec_max_size(_v_) // todo
+//#define ucvec_resize(_v_) // todo
+#define ucvec_capacity(_v_) (ucbytes_capacity((_v_)->b) / (_v_)->szmem)
 #define ucvec_empty(_v_) ((_v_)->l == 0)
+#define ucvec_reserve(_v_, _n_) ucbytes_reserve(&(_v_)->b, (_n_) * (_v_)->szmem)
+#define ucvec_shrink_to_fit(_v_)                                               \
+  ucbytes_shrink(&(_v_)->b, (_v_)->l *(_v_)->szmem)
+
+// Element access
+#define ucvec_data(_v_) ucbytes_data((_v_)->b)
+#define ucvec_at(_v_, _pos_) (ucvec_data(_v_) + (_pos_ * (_v_)->szmem))
+#define ucvec_front(_v_) ucvec_data(_v_)
+#define ucvec_back(_v_) (ucvec_data(_v_) + ((_v_)->l - 1) * (_v_)->szmem)
 
 typedef struct {
   ucbytes_t *b;
@@ -48,23 +61,21 @@ static inline void ucvec_pop(ucvec_t *v) {
   }
 }
 
-static inline size_t ucvec_size(ucvec_t *v) { return v->l; }
-
 static inline size_t ucvec_findl(ucvec_t *v, void *val, size_t l) {
   for (size_t i = 0; i < v->l; i++)
-    if (!memcmp(v->b->data + (i * l), val, l))
+    if (!memcmp(ucvec_data(v) + (i * l), val, l))
       return i;
   return v->l + 1;
 }
 
 static inline int ucvec_erase(ucvec_t *v, size_t pos) {
-  if (!v->l || pos >= v->b->sz)
+  if (!v->l || pos >= ucbytes_size(v->b))
     return -1;
-  size_t li = v->b->sz - v->szmem;
-  for (size_t i = pos * v->szmem; i < li; i += v->szmem)
-    memcpy(v->b->data + i, v->b->data + i + v->szmem, v->szmem);
+  size_t li = ucbytes_size(v->b) - v->szmem;
+  memmove(ucvec_data(v) + (pos * v->szmem),
+          ucvec_data(v) + (pos * v->szmem) + v->szmem, li);
   v->l--;
-  v->b->sz -= v->szmem;
+  ucbytes_set_size(v->b, ucbytes_size(v->b) - v->szmem);
   return 0;
 }
 
