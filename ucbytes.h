@@ -15,6 +15,15 @@
       fprintf(_f_, "%02x", (_b_)->data[i]);                                    \
     fprintf(_f_, "\n");                                                        \
   } while (0)
+#define ucbytes_size(_b_) ((_b_)->sz)
+#define ucbytes_set_size(_b_, _nsz_)                                           \
+  do {                                                                         \
+    (_b_)->sz = _nsz_;                                                         \
+  } while (0)
+#define ucbytes_capacity(_b_) ((_b_)->cap)
+#define ucbytes_data(_b_) ((_b_)->data)
+#define ucbytes_accomodate(_bp_, _inc_)                                        \
+  ucbytes_reserve(_bp_, (*_bp_)->sz + _inc_)
 
 typedef struct {
   size_t sz;
@@ -33,8 +42,8 @@ static inline ucbytes_t *ucbytes_new(size_t sz) {
   return cb;
 }
 
-static inline int ucbytes_accomodate(ucbytes_t **b, size_t inc) {
-  if ((*b)->cap >= ((*b)->sz + inc))
+static inline int ucbytes_reserve(ucbytes_t **b, size_t nsz) {
+  if ((*b)->cap >= nsz)
     return 0;
   ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + ((*b)->cap * 2));
   if (!b_)
@@ -60,11 +69,17 @@ static inline int ucbytes_readl_(ucbytes_t *b, size_t pos, void *v, size_t l) {
   return 0;
 }
 
-static inline void ucbytes_printdl(FILE *file, unsigned char *data, size_t l) {
-  for (size_t i = 0; i < l; ++i) {
-    fprintf(file, "%02x", data[i]);
-  }
-  fprintf(file, "\n");
+static inline int ucbytes_shrink(ucbytes_t **b, size_t nsz) {
+  if (nsz <= (*b)->sz || nsz == (*b)->cap)
+    return 0;
+  else if (nsz > (*b)->cap)
+    return -1;
+  ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + nsz);
+  if (!b_)
+    return -2;
+  *b = b_;
+  (*b)->cap = nsz;
+  return 0;
 }
 
 #endif // uCUTILS_BYTES_H
