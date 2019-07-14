@@ -47,6 +47,8 @@ static inline ucbytes_t *ucbytes_new(size_t sz) {
 static inline int ucbytes_reserve(ucbytes_t **b, size_t nsz) {
   if ((*b)->cap >= nsz)
     return 0;
+  else if (!(*b)->cap)
+    (*b)->cap = nsz;
   ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + ((*b)->cap * 2));
   if (!b_)
     return -1;
