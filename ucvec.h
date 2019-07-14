@@ -15,7 +15,6 @@
 // capacity
 #define ucvec_size(_v_) ((_v_)->l)
 //#define ucvec_max_size(_v_) // todo
-//#define ucvec_resize(_v_) // todo
 #define ucvec_capacity(_v_) (ucbytes_capacity((_v_)->b) / (_v_)->szmem)
 #define ucvec_empty(_v_) ((_v_)->l == 0)
 #define ucvec_reserve(_v_, _n_) ucbytes_reserve(&(_v_)->b, (_n_) * (_v_)->szmem)
@@ -86,6 +85,21 @@ static inline int ucvec_erase(ucvec_t *v, size_t pos) {
           ucvec_data(v) + (pos * v->szmem) + v->szmem, li);
   v->l--;
   ucbytes_set_size(v->b, ucbytes_size(v->b) - v->szmem);
+  return 0;
+}
+
+static inline int ucvec_resize(ucvec_t *v, size_t nsz, void *val) {
+  if (nsz == v->l) {
+    return 0;
+  } else if (nsz > v->l) {
+    size_t dl = nsz - v->l;
+    while (dl--)
+      if (ucvec_push_back(v, val) < 0)
+        return -1;
+  } else {
+    while (nsz--)
+      ucvec_pop_back(v);
+  }
   return 0;
 }
 
