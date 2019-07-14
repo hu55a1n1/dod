@@ -25,6 +25,7 @@
 #define ucbytes_accomodate(_bp_, _inc_)                                        \
   ucbytes_reserve(_bp_, (*_bp_)->sz + _inc_)
 #define ucbytes_shrink_to_fit(_b_) ucbytes_shrink(_b_, (_b_)->sz)
+#define ucbytes_clear(_b_) ((_b_)->sz = 0)
 
 typedef struct {
   size_t sz;

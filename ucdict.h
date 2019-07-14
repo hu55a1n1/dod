@@ -20,10 +20,10 @@
     memcpy((_k_), ucvec_back((_d_)->keys), sizeof(*(_k_)));                    \
     memcpy((_v_), ucvec_back((_d_)->vals), sizeof(*(_v_)));                    \
   } while (0)
-#define ucdict_pop(_d_)                                                        \
+#define ucdict_pop_back(_d_)                                                   \
   do {                                                                         \
-    ucvec_pop((_d_)->keys);                                                    \
-    ucvec_pop((_d_)->vals);                                                    \
+    ucvec_pop_back((_d_)->keys);                                               \
+    ucvec_pop_back((_d_)->vals);                                               \
   } while (0)
 
 typedef struct {
@@ -51,7 +51,7 @@ static inline int ucdict_push_backl(ucdict_t *d, void *k, size_t kl, void *v,
   if (ucvec_push_backl(d->keys, k, kl) < 0) {
     return -1;
   } else if (ucvec_push_backl(d->vals, v, vl) < 0) {
-    ucvec_pop(d->keys);
+    ucvec_pop_back(d->keys);
     return -1;
   }
   return 0;

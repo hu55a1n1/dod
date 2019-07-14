@@ -10,7 +10,6 @@
       ucbytes_free((_v_)->b);                                                  \
     free(_v_);                                                                 \
   } while (0)
-#define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
 #define ucvec_find(_v_, _val_) ucvec_findl(_v_, _val_, (_v_)->szmem)
 
 // capacity
@@ -28,6 +27,24 @@
 #define ucvec_at(_v_, _pos_) (ucvec_data(_v_) + (_pos_ * (_v_)->szmem))
 #define ucvec_front(_v_) ucvec_data(_v_)
 #define ucvec_back(_v_) (ucvec_data(_v_) + ((_v_)->l - 1) * (_v_)->szmem)
+
+// Modifiers
+//#define assign(_v_, _start_, _end_) // todo
+#define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
+#define ucvec_pop_back(_v_)                                                    \
+  do {                                                                         \
+    if ((_v_)->l) {                                                            \
+      (_v_)->l--;                                                              \
+      (_v_)->b->sz -= (_v_)->szmem;                                            \
+    }                                                                          \
+  } while (0)
+//#define ucvec_insert(_v_) // todo
+//#define ucvec_swap(_v1_, _v2_) // todo
+#define ucvec_clear(_v_)                                                       \
+  do {                                                                         \
+    (_v_)->l = 0;                                                              \
+    ucbytes_clear((_v_)->b);                                                   \
+  } while (0)
 
 typedef struct {
   ucbytes_t *b;
@@ -52,13 +69,6 @@ static inline ucvec_t *ucvec_newl(size_t tsz, size_t n) {
 static inline int ucvec_push_backl(ucvec_t *v, void *val, size_t l) {
   v->l++;
   return ucbytes_writel_(&v->b, val, l);
-}
-
-static inline void ucvec_pop(ucvec_t *v) {
-  if (v->l) {
-    v->l--;
-    v->b->sz -= v->szmem;
-  }
 }
 
 static inline size_t ucvec_findl(ucvec_t *v, void *val, size_t l) {

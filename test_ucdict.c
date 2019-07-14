@@ -17,7 +17,7 @@ static void test_ucdict(void) {
   size_t dl = ucdict_size(d);
   for (size_t i = 0; i < dl; ++i) {
     ucdict_back_read(d, &k, &v);
-    ucdict_pop(d);
+    ucdict_pop_back(d);
     printf("(%s, %d)\n", k, v);
   }
   printf("Size: %lu\n", ucdict_size(d));

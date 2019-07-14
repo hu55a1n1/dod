@@ -25,7 +25,7 @@ typedef struct {
       ucvec_push_back(v, arr + i);                                             \
     for (i = 0; i < sz; i++) {                                                 \
       assert(!memcmp(ucvec_back(v), &arr[sz - i - 1], sizeof(type)));          \
-      ucvec_pop(v);                                                            \
+      ucvec_pop_back(v);                                                       \
     }                                                                          \
     ucvec_free(v);                                                             \
   } while (0)
