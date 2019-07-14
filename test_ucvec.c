@@ -8,11 +8,12 @@ typedef struct {
   int y;
 } struct_t;
 
-#define RUN_TEST(msg, t)                                                       \
+#define TEST_PRINT_THEAD() fprintf(stderr, "| %25s | %6s |\n", "Test", "Result")
+#define TEST_RUN(msg, t)                                                       \
   do {                                                                         \
-    printf("| %30s | ", msg);                                                  \
+    fprintf(stderr, "| %25s | ", msg);                                         \
     t;                                                                         \
-    printf("OK |\n");                                                          \
+    fprintf(stderr, "%6s |\n", "OK");                                          \
   } while (0)
 
 #define test_ucvec_push_pop_generic(type, ...)                                 \
@@ -44,42 +45,84 @@ typedef struct {
   } while (0)
 
 static void test_ucvec_push_pop(void) {
-  RUN_TEST("test push pop for int",
-           test_ucvec_push_pop_generic(int, 1, 2, 3, 4, 5));
-  RUN_TEST("test push pop for float",
+  TEST_RUN("push pop for int", test_ucvec_push_pop_generic(int, 1, 2, 3, 4, 5));
+  TEST_RUN("push pop for float",
            test_ucvec_push_pop_generic(float, 1.0, 2.0, 3.0, 4.0, 5.0));
-  RUN_TEST("test push pop for struct_t",
+  TEST_RUN("push pop for struct_t",
            test_ucvec_push_pop_generic(struct_t, {.x = 1, .y = 2},
                                        {.x = 3, .y = 4}, {.x = 5, .y = 6},
                                        {.x = 7, .y = 8}, {.x = 9, .y = 10}));
-  RUN_TEST("test push pop for char *",
+  TEST_RUN("push pop for char *",
            test_ucvec_push_pop_generic(char *, "str1", "str2", "str3", "str4",
                                        "str5"));
   typedef char str5[5];
-  RUN_TEST("test push pop for str5",
+  TEST_RUN("push pop for str5",
            test_ucvec_push_pop_generic(str5, "str1", "str2", "str3", "str4",
                                        "str5"));
 }
 
 static void test_ucvec_erase(void) {
-  RUN_TEST("test erase for int", test_ucvec_erase_generic(int, 1, 2, 3, 4, 5));
-  RUN_TEST("test erase for float",
+  TEST_RUN("erase for int", test_ucvec_erase_generic(int, 1, 2, 3, 4, 5));
+  TEST_RUN("erase for float",
            test_ucvec_erase_generic(float, 1.0, 2.0, 3.0, 4.0, 5.0));
-  RUN_TEST("test erase for struct_t",
+  TEST_RUN("erase for struct_t",
            test_ucvec_erase_generic(struct_t, {.x = 1, .y = 2},
                                     {.x = 3, .y = 4}, {.x = 5, .y = 6},
                                     {.x = 7, .y = 8}, {.x = 9, .y = 10}));
-  RUN_TEST(
-      "test erase for char *",
+  TEST_RUN(
+      "erase for char *",
       test_ucvec_erase_generic(char *, "str1", "str2", "str3", "str4", "str5"));
   typedef char str5[5];
-  RUN_TEST(
-      "test erase for str5",
-      test_ucvec_erase_generic(str5, "str1", "str2", "str3", "str4", "str5"));
+  TEST_RUN("erase for str5", test_ucvec_erase_generic(str5, "str1", "str2",
+                                                      "str3", "str4", "str5"));
+}
+
+static void test_ucvec_access() {
+  ucvec_t *v = ucvec_new(int, 5);
+  for (int i = 0; i < 5; ++i)
+    ucvec_push_back(v, &i);
+
+  int *j = (int *)ucvec_at(v, 2);
+  assert(*j == 2);
+  j = (int *)ucvec_front(v);
+  assert(*j == 0);
+  j = (int *)ucvec_back(v);
+  assert(*j == 4);
+  ucvec_free(v);
+}
+
+static void test_ucvec_shrink_to_fit() {
+  ucvec_t *v = ucvec_new(int, 5);
+  for (int i = 0; i < 5; ++i)
+    ucvec_push_back(v, &i);
+
+  int j = 6;
+  ucvec_push_back(v, &j);
+  ucvec_shrink_to_fit(v);
+  assert(ucvec_capacity(v) == 6);
+
+  // edge case
+  ucvec_clear(v);
+  assert(ucvec_size(v) == 0);
+  ucvec_shrink_to_fit(v);
+  assert(ucvec_capacity(v) == 0);
+  ucvec_push_back(v, &j);
+  assert(ucvec_size(v) == 1);
+  ucvec_free(v);
+}
+
+static void test_ucvec_reserve() {
+  ucvec_t *v = ucvec_new(int, 5);
+  ucvec_reserve(v, 12);
+  ucvec_free(v);
 }
 
 int main(void) {
+  TEST_PRINT_THEAD();
   test_ucvec_push_pop();
   test_ucvec_erase();
+  TEST_RUN("element access", test_ucvec_access());
+  TEST_RUN("shrink to fit", test_ucvec_shrink_to_fit());
+  TEST_RUN("reserve", test_ucvec_reserve());
   return 0;
 }
