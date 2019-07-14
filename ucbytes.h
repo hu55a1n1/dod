@@ -24,6 +24,7 @@
 #define ucbytes_data(_b_) ((_b_)->data)
 #define ucbytes_accomodate(_bp_, _inc_)                                        \
   ucbytes_reserve(_bp_, (*_bp_)->sz + _inc_)
+#define ucbytes_shrink_to_fit(_b_) ucbytes_shrink(_b_, (_b_)->sz)
 
 typedef struct {
   size_t sz;
@@ -70,9 +71,9 @@ static inline int ucbytes_readl_(ucbytes_t *b, size_t pos, void *v, size_t l) {
 }
 
 static inline int ucbytes_shrink(ucbytes_t **b, size_t nsz) {
-  if (nsz <= (*b)->sz || nsz == (*b)->cap)
+  if (nsz == (*b)->cap)
     return 0;
-  else if (nsz > (*b)->cap)
+  else if (nsz > (*b)->cap || nsz < (*b)->sz)
     return -1;
   ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + nsz);
   if (!b_)
