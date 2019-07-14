@@ -114,6 +114,13 @@ static void test_ucvec_shrink_to_fit() {
 static void test_ucvec_reserve() {
   ucvec_t *v = ucvec_new(int, 5);
   ucvec_reserve(v, 12);
+  assert(ucvec_capacity(v) >= 12);
+  ucvec_reserve(v, 4);
+  assert(ucvec_capacity(v) >= 4);
+  ucvec_reserve(v, 120);
+  assert(ucvec_capacity(v) >= 120);
+  ucvec_free(v);
+}
   ucvec_free(v);
 }
 
