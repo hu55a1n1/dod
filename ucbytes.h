@@ -65,7 +65,8 @@ static inline int ucbytes_reserve(ucbytes_t **b, size_t nsz) {
 static inline int ucbytes_writel_(ucbytes_t **b, void *v, size_t l) {
   if (ucbytes_accomodate(b, l) != 0)
     return -1;
-  memcpy((*b)->data + (*b)->sz, v, l);
+  (v != NULL) ? memcpy((*b)->data + (*b)->sz, v, l)
+              : memset((*b)->data + (*b)->sz, 0, l);
   (*b)->sz += l;
   return 0;
 }
