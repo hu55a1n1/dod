@@ -121,6 +121,23 @@ static void test_ucvec_reserve() {
   assert(ucvec_capacity(v) >= 120);
   ucvec_free(v);
 }
+
+static void test_ucvec_resize() {
+  ucvec_t *v = ucvec_new(int, 10);
+  size_t i;
+  for (i = 0; i < 10; ++i)
+    ucvec_push_back(v, &i);
+  ucvec_resize(v, 5, NULL);
+  assert(ucvec_size(v) == 5);
+  int j = 100;
+  ucvec_resize(v, 8, &j);
+  assert(ucvec_size(v) == 8);
+  for (i = 5; i < ucvec_size(v); ++i)
+    assert(*ucvec_at(v, i) == 100);
+  ucvec_resize(v, 12, NULL);
+  assert(ucvec_size(v) == 12);
+  for (i = 8; i < ucvec_size(v); ++i)
+    assert(*ucvec_at(v, i) == 0);
   ucvec_free(v);
 }
 
@@ -131,5 +148,6 @@ int main(void) {
   TEST_RUN("element access", test_ucvec_access());
   TEST_RUN("shrink to fit", test_ucvec_shrink_to_fit());
   TEST_RUN("reserve", test_ucvec_reserve());
+  TEST_RUN("resize", test_ucvec_resize());
   return 0;
 }
