@@ -170,6 +170,44 @@ static void test_ucvec_assign(void) {
     assert(*ucvec_at(v4, l) == vals[l]);
   ucvec_free(v4);
 }
+
+static void test_ucvec_insert(void) {
+  ucvec_t *v = ucvec_new(int, 3);
+  int i = 100;
+  ucvec_assign_fill(v, 3, &i);
+  for (size_t j = 0; j < ucvec_size(v); ++j)
+    printf("%d ", *(int *)ucvec_at(v, j));
+  printf("\n");
+
+  i = 200;
+  ucvec_insert(v, ucvec_front(v), &i);
+  for (size_t j = 0; j < ucvec_size(v); ++j)
+    printf("%d ", *(int *)ucvec_at(v, j));
+  printf("\n");
+
+  i = 300;
+  ucvec_insert(v, ucvec_at(v, 2), &i);
+  for (size_t j = 0; j < ucvec_size(v); ++j)
+    printf("%d ", *(int *)ucvec_at(v, j));
+  printf("\n");
+
+  ucvec_t *v1 = ucvec_new(int, 2);
+  i = 400;
+  ucvec_assign_fill(v1, 2, &i);
+  ucvec_insert_range(v, ucvec_at(v, 2), ucvec_front(v1), ucvec_back(v1));
+  for (size_t j = 0; j < ucvec_size(v); ++j)
+    printf("%d ", *(int *)ucvec_at(v, j));
+  printf("\n");
+  ucvec_free(v1);
+
+  int vals[] = {501, 502, 503};
+  ucvec_insert_range(v, ucvec_front(v), vals, vals + 3);
+  for (size_t j = 0; j < ucvec_size(v); ++j)
+    printf("%d ", *(int *)ucvec_at(v, j));
+  printf("\n");
+  ucvec_free(v);
+}
+
 int main(void) {
   TEST_PRINT_THEAD();
   test_ucvec_push_pop();

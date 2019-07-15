@@ -125,4 +125,20 @@ static inline int ucvec_assign_fill(ucvec_t *v, size_t n, void *val) {
   return 0;
 }
 
+static inline int ucvec_insert_range(ucvec_t *v, void *pos, void *start,
+                                     void *end) {
+  size_t l = ((uintptr_t)end - (uintptr_t)start) / v->szmem;
+  if (ucbytes_write_range_atl_(&v->b, pos, start, end) < 0)
+    return -1;
+  v->l += l;
+  return 0;
+}
+
+static inline int ucvec_insert(ucvec_t *v, void *pos, void *val) {
+  if (ucbytes_write_atl_(&v->b, pos, val, v->szmem) < 0)
+    return -1;
+  v->l++;
+  return 0;
+}
+
 #endif // uCUTILS_VECT_H

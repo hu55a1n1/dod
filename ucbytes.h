@@ -1,6 +1,7 @@
 #ifndef uCUTILS_BYTES_H
 #define uCUTILS_BYTES_H
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -67,6 +68,31 @@ static inline int ucbytes_writel_(ucbytes_t **b, void *v, size_t l) {
     return -1;
   (v != NULL) ? memcpy((*b)->data + (*b)->sz, v, l)
               : memset((*b)->data + (*b)->sz, 0, l);
+  (*b)->sz += l;
+  return 0;
+}
+
+static inline int ucbytes_write_range_atl_(ucbytes_t **b, void *pos,
+                                           void *start, void *end) {
+  if (start == NULL)
+    return -1;
+  size_t l = (uintptr_t)end - (uintptr_t)start;
+  size_t sz = (*b)->sz - ((uintptr_t)pos - (uintptr_t)(*b)->data);
+  if (ucbytes_accomodate(b, l) != 0)
+    return -1;
+  memmove((void *)((uintptr_t)pos + l), pos, sz);
+  memcpy(pos, start, l);
+  (*b)->sz += l;
+  return 0;
+}
+
+static inline int ucbytes_write_atl_(ucbytes_t **b, void *pos, void *val,
+                                     size_t l) {
+  if (ucbytes_accomodate(b, l) != 0)
+    return -1;
+  size_t sz = (*b)->sz - ((uintptr_t)pos - (uintptr_t)(*b)->data);
+  memmove((void *)((uintptr_t)pos + l), pos, sz);
+  memcpy(pos, val, l);
   (*b)->sz += l;
   return 0;
 }
