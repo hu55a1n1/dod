@@ -141,6 +141,35 @@ static void test_ucvec_resize() {
   ucvec_free(v);
 }
 
+static void test_ucvec_assign() {
+  ucvec_t *v1 = ucvec_new(int, 5);
+  for (int i = 0; i < 5; ++i)
+    ucvec_push_back(v1, &i);
+  ucvec_t *v2 = ucvec_new(int, 3);
+  for (int j = 3; j != 0; --j)
+    ucvec_push_back(v2, &j);
+  ucvec_assign_range(v1, ucvec_at(v2, 0), ucvec_at(v2, 2));
+  assert(ucvec_size(v1) == 2);
+  assert(*ucvec_at(v1, 0) == *ucvec_at(v2, 0));
+  assert(*ucvec_at(v1, 1) == *ucvec_at(v2, 1));
+  ucvec_free(v1);
+  ucvec_free(v2);
+  ucvec_t *v3 = ucvec_new(int, 0);
+  int val = 100;
+  ucvec_assign_fill(v3, 10, &val);
+  assert(ucvec_size(v3) == 10);
+  for (size_t k = 0; k < ucvec_size(v3); ++k)
+    assert(*ucvec_at(v3, k) == 100);
+  ucvec_free(v3);
+  ucvec_t *v4 = ucvec_new(int, 10);
+  int vals[] = {5, 4, 3, 2, 1};
+  size_t valsz = (sizeof(vals) / sizeof(*vals));
+  ucvec_assign_range(v4, vals, vals + valsz);
+  assert(ucvec_size(v4) == valsz);
+  for (size_t l = 0; l < ucvec_size(v4); ++l)
+    assert(*ucvec_at(v4, l) == vals[l]);
+  ucvec_free(v4);
+}
 int main(void) {
   TEST_PRINT_THEAD();
   test_ucvec_push_pop();
@@ -149,5 +178,6 @@ int main(void) {
   TEST_RUN("shrink to fit", test_ucvec_shrink_to_fit());
   TEST_RUN("reserve", test_ucvec_reserve());
   TEST_RUN("resize", test_ucvec_resize());
+  TEST_RUN("assign", test_ucvec_assign());
   return 0;
 }

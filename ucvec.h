@@ -28,7 +28,6 @@
 #define ucvec_back(_v_) (ucvec_data(_v_) + ((_v_)->l - 1) * (_v_)->szmem)
 
 // Modifiers
-//#define assign(_v_, _start_, _end_) // todo
 #define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
 #define ucvec_pop_back(_v_)                                                    \
   do {                                                                         \
@@ -100,6 +99,29 @@ static inline int ucvec_resize(ucvec_t *v, size_t nsz, void *val) {
     while (nsz--)
       ucvec_pop_back(v);
   }
+  return 0;
+}
+
+static inline int ucvec_assign_range(ucvec_t *v, void *start, void *end) {
+  if (!start || !end)
+    return -1;
+  else if (start > end)
+    return -1;
+  ucvec_clear(v);
+  uintptr_t p = (uintptr_t)start;
+  while (p < (uintptr_t)end) {
+    if (ucvec_push_backl(v, (void *)p, v->szmem) < 0)
+      return -2;
+    p += v->szmem;
+  }
+  return 0;
+}
+
+static inline int ucvec_assign_fill(ucvec_t *v, size_t n, void *val) {
+  ucvec_clear(v);
+  while (n--)
+    if (ucvec_push_backl(v, val, v->szmem) < 0)
+      return -1;
   return 0;
 }
 
