@@ -77,7 +77,7 @@ static void test_ucvec_erase(void) {
                                                       "str3", "str4", "str5"));
 }
 
-static void test_ucvec_access() {
+static void test_ucvec_access(void) {
   ucvec_t *v = ucvec_new(int, 5);
   for (int i = 0; i < 5; ++i)
     ucvec_push_back(v, &i);
@@ -91,7 +91,7 @@ static void test_ucvec_access() {
   ucvec_free(v);
 }
 
-static void test_ucvec_shrink_to_fit() {
+static void test_ucvec_shrink_to_fit(void) {
   ucvec_t *v = ucvec_new(int, 5);
   for (int i = 0; i < 5; ++i)
     ucvec_push_back(v, &i);
@@ -111,7 +111,7 @@ static void test_ucvec_shrink_to_fit() {
   ucvec_free(v);
 }
 
-static void test_ucvec_reserve() {
+static void test_ucvec_reserve(void) {
   ucvec_t *v = ucvec_new(int, 5);
   ucvec_reserve(v, 12);
   assert(ucvec_capacity(v) >= 12);
@@ -122,7 +122,7 @@ static void test_ucvec_reserve() {
   ucvec_free(v);
 }
 
-static void test_ucvec_resize() {
+static void test_ucvec_resize(void) {
   ucvec_t *v = ucvec_new(int, 10);
   size_t i;
   for (i = 0; i < 10; ++i)
@@ -141,7 +141,7 @@ static void test_ucvec_resize() {
   ucvec_free(v);
 }
 
-static void test_ucvec_assign() {
+static void test_ucvec_assign(void) {
   ucvec_t *v1 = ucvec_new(int, 5);
   for (int i = 0; i < 5; ++i)
     ucvec_push_back(v1, &i);
@@ -179,5 +179,13 @@ int main(void) {
   TEST_RUN("reserve", test_ucvec_reserve());
   TEST_RUN("resize", test_ucvec_resize());
   TEST_RUN("assign", test_ucvec_assign());
+  TEST_RUN("insert", test_ucvec_insert());
+  // find
+  // rename macro args
+  // const args
+  // don't use ucvec_data
+  // front vs begin
+  // errors -> nomem, eparam
+  // char* instead of void *
   return 0;
 }
