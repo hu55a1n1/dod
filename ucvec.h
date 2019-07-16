@@ -26,6 +26,8 @@
 #define ucvec_at(_v_, _pos_) (ucvec_data(_v_) + (_pos_ * (_v_)->szmem))
 #define ucvec_front(_v_) ucvec_data(_v_)
 #define ucvec_back(_v_) (ucvec_data(_v_) + ((_v_)->l - 1) * (_v_)->szmem)
+#define ucvec_begin(_v_) ucvec_front(_v_)
+#define ucvec_end(_v_) (ucvec_data(_v_) + ((_v_)->l * (_v_)->szmem))
 
 // Modifiers
 #define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
