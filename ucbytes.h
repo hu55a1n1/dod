@@ -72,27 +72,39 @@ static inline int ucbytes_writel_(ucbytes_t **b, void *v, size_t l) {
   return 0;
 }
 
-static inline int ucbytes_write_range_atl_(ucbytes_t **b, void *pos,
-                                           void *start, void *end) {
+static inline int ucbytes_write_range_atl_(ucbytes_t **b, unsigned char *pos,
+                                           unsigned char *start,
+                                           unsigned char *end) {
   if (start == NULL)
     return -1;
-  size_t l = (uintptr_t)end - (uintptr_t)start;
-  size_t sz = (*b)->sz - ((uintptr_t)pos - (uintptr_t)(*b)->data);
+  size_t idx = 0;
+  size_t l = end - start;
+  while (pos > (*b)->data) {
+    idx++;
+    pos -= l;
+  }
   if (ucbytes_accomodate(b, l) != 0)
     return -1;
-  memmove((void *)((uintptr_t)pos + l), pos, sz);
-  memcpy(pos, start, l);
+  memmove((*b)->data + ((idx + 1) * l), (*b)->data + (idx * l),
+          (*b)->sz - (idx * l));
+  memcpy((*b)->data + (idx * l), start, l);
   (*b)->sz += l;
   return 0;
 }
 
-static inline int ucbytes_write_atl_(ucbytes_t **b, void *pos, void *val,
-                                     size_t l) {
+static inline int ucbytes_write_atl_(ucbytes_t **b, unsigned char *pos,
+                                     unsigned char *val, size_t l) {
+  size_t idx = 0;
+  while (pos > (*b)->data) {
+    idx++;
+    pos -= l;
+  }
   if (ucbytes_accomodate(b, l) != 0)
     return -1;
-  size_t sz = (*b)->sz - ((uintptr_t)pos - (uintptr_t)(*b)->data);
-  memmove((void *)((uintptr_t)pos + l), pos, sz);
-  memcpy(pos, val, l);
+  memmove((*b)->data + ((idx + 1) * l), (*b)->data + (idx * l),
+          (*b)->sz - (idx * l));
+  memcpy((*b)->data + (idx * l), val, l);
+
   (*b)->sz += l;
   return 0;
 }
