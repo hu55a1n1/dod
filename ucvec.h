@@ -66,7 +66,7 @@ static inline ucvec_t *ucvec_newl(size_t tsz, size_t n) {
   return v;
 }
 
-static inline int ucvec_push_backl(ucvec_t *v, const void *val, size_t l) {
+static inline ucret_t ucvec_push_backl(ucvec_t *v, const void *val, size_t l) {
   v->l++;
   return ucbytes_writel_(&v->b, val, l);
 }
@@ -78,70 +78,70 @@ static inline size_t ucvec_findl(const ucvec_t *v, const void *val, size_t l) {
   return v->l + 1;
 }
 
-static inline int ucvec_erase(ucvec_t *v, size_t pos) {
+static inline ucret_t ucvec_erase(ucvec_t *v, size_t pos) {
   if (!v->l || pos >= ucbytes_size(v->b))
-    return -1;
+    return UCRET_EPARAM;
   size_t li = ucbytes_size(v->b) - v->szmem;
   memmove(ucvec_data(v) + (pos * v->szmem),
           ucvec_data(v) + (pos * v->szmem) + v->szmem, li);
   v->l--;
   ucbytes_set_size(v->b, ucbytes_size(v->b) - v->szmem);
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucvec_resize(ucvec_t *v, size_t nsz, const void *val) {
+static inline ucret_t ucvec_resize(ucvec_t *v, size_t nsz, const void *val) {
   if (nsz == v->l) {
-    return 0;
+    return UCRET_OK;
   } else if (nsz > v->l) {
     size_t dl = nsz - v->l;
     while (dl--)
       if (ucvec_push_back(v, val) < 0)
-        return -1;
+        return UCRET_ENOMEM;
   } else {
     while (nsz--)
       ucvec_pop_back(v);
   }
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucvec_assign_range(ucvec_t *v, const void *start,
-                                     const void *end) {
-  if (!start || !end)
-    return -1;
-  else if (start > end)
-    return -1;
+static inline ucret_t ucvec_assign_range(ucvec_t *v, const void *start,
+                                         const void *end) {
+  if (!start || !end || (start > end))
+    return UCRET_EPARAM;
   ucvec_clear(v);
   uintptr_t p = (uintptr_t)start;
   while (p < (uintptr_t)end) {
     if (ucvec_push_backl(v, (void *)p, v->szmem) < 0)
-      return -2;
+      return UCRET_ENOMEM;
     p += v->szmem;
   }
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucvec_assign_fill(ucvec_t *v, size_t n, const void *val) {
+static inline ucret_t ucvec_assign_fill(ucvec_t *v, size_t n, const void *val) {
   ucvec_clear(v);
   while (n--)
     if (ucvec_push_backl(v, val, v->szmem) < 0)
-      return -1;
-  return 0;
+      return UCRET_ENOMEM;
+  return UCRET_OK;
 }
 
-static inline int ucvec_insert_range(ucvec_t *v, const void *pos,
-                                     const void *start, const void *end) {
+static inline ucret_t ucvec_insert_range(ucvec_t *v, const void *pos,
+                                         const void *start, const void *end) {
   size_t l = ((uintptr_t)end - (uintptr_t)start) / v->szmem;
-  if (ucbytes_write_range_atl_(&v->b, pos, start, end) < 0)
-    return -1;
+  ucret_t r = ucbytes_write_range_atl_(&v->b, pos, start, end);
+  if (r < 0)
+    return r;
   v->l += l;
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucvec_insert(ucvec_t *v, const void *pos, const void *val) {
+static inline ucret_t ucvec_insert(ucvec_t *v, const void *pos,
+                                   const void *val) {
   if (ucbytes_write_atl_(&v->b, pos, val, v->szmem) < 0)
-    return -1;
+    return UCRET_ENOMEM;
   v->l++;
-  return 0;
+  return UCRET_OK;
 }
 
 #endif // uCUTILS_VECT_H

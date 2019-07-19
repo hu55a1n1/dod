@@ -207,12 +207,5 @@ int main(void) {
   TEST_RUN("resize", test_ucvec_resize());
   TEST_RUN("assign", test_ucvec_assign());
   TEST_RUN("insert", test_ucvec_insert());
-  // find
-  // rename macro args
-  // const args
-  // don't use ucvec_data
-  // front vs begin
-  // errors -> nomem, eparam
-  // char* instead of void *
   return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef uCUTILS_BYTES_H
 #define uCUTILS_BYTES_H
 
+#include "ucret.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,9 +46,9 @@ static inline ucbytes_t *ucbytes_new(size_t sz) {
   return cb;
 }
 
-static inline int ucbytes_reserve(ucbytes_t **b, size_t nsz) {
+static inline ucret_t ucbytes_reserve(ucbytes_t **b, size_t nsz) {
   if ((*b)->cap >= nsz)
-    return 0;
+    return UCRET_OK;
   else if (!(*b)->cap)
     (*b)->cap = nsz;
 
@@ -57,27 +58,27 @@ static inline int ucbytes_reserve(ucbytes_t **b, size_t nsz) {
   }
   ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + ncap);
   if (!b_)
-    return -1;
+    return UCRET_ENOMEM;
   *b = b_;
   (*b)->cap = ncap;
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucbytes_writel_(ucbytes_t **b, const void *v, size_t l) {
+static inline ucret_t ucbytes_writel_(ucbytes_t **b, const void *v, size_t l) {
   if (ucbytes_accomodate(b, l) != 0)
-    return -1;
+    return UCRET_ENOMEM;
   (v != NULL) ? memcpy((*b)->data + (*b)->sz, v, l)
               : memset((*b)->data + (*b)->sz, 0, l);
   (*b)->sz += l;
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucbytes_write_range_atl_(ucbytes_t **b,
-                                           const unsigned char *pos,
-                                           const unsigned char *start,
-                                           const unsigned char *end) {
+static inline ucret_t ucbytes_write_range_atl_(ucbytes_t **b,
+                                               const unsigned char *pos,
+                                               const unsigned char *start,
+                                               const unsigned char *end) {
   if (start == NULL)
-    return -1;
+    return UCRET_EPARAM;
   size_t idx = 0;
   size_t l = end - start;
   while (pos > (*b)->data) {
@@ -85,50 +86,52 @@ static inline int ucbytes_write_range_atl_(ucbytes_t **b,
     pos -= l;
   }
   if (ucbytes_accomodate(b, l) != 0)
-    return -1;
+    return UCRET_ENOMEM;
   memmove((*b)->data + ((idx + 1) * l), (*b)->data + (idx * l),
           (*b)->sz - (idx * l));
   memcpy((*b)->data + (idx * l), start, l);
   (*b)->sz += l;
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucbytes_write_atl_(ucbytes_t **b, const unsigned char *pos,
-                                     const unsigned char *val, size_t l) {
+static inline ucret_t ucbytes_write_atl_(ucbytes_t **b,
+                                         const unsigned char *pos,
+                                         const unsigned char *val, size_t l) {
   size_t idx = 0;
   while (pos > (*b)->data) {
     idx++;
     pos -= l;
   }
   if (ucbytes_accomodate(b, l) != 0)
-    return -1;
+    return UCRET_ENOMEM;
   memmove((*b)->data + ((idx + 1) * l), (*b)->data + (idx * l),
           (*b)->sz - (idx * l));
   memcpy((*b)->data + (idx * l), val, l);
 
   (*b)->sz += l;
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucbytes_readl_(ucbytes_t *b, size_t pos, void *v, size_t l) {
+static inline ucret_t ucbytes_readl_(ucbytes_t *b, size_t pos, void *v,
+                                     size_t l) {
   if (pos >= b->sz)
-    return -1;
+    return UCRET_EPARAM;
   memcpy(v, b->data + pos, l);
   b->sz += l;
-  return 0;
+  return UCRET_OK;
 }
 
-static inline int ucbytes_shrink(ucbytes_t **b, size_t nsz) {
+static inline ucret_t ucbytes_shrink(ucbytes_t **b, size_t nsz) {
   if (nsz == (*b)->cap)
-    return 0;
+    return UCRET_OK;
   else if (nsz > (*b)->cap || nsz < (*b)->sz)
-    return -1;
+    return UCRET_EPARAM;
   ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + nsz);
   if (!b_)
-    return -2;
+    return UCRET_ENOMEM;
   *b = b_;
   (*b)->cap = nsz;
-  return 0;
+  return UCRET_OK;
 }
 
 #endif // uCUTILS_BYTES_H

@@ -46,15 +46,15 @@ static inline ucdict_t *ucdict_newl(size_t ksz, size_t vsz, size_t nmemb) {
   return d;
 }
 
-static inline int ucdict_push_backl(ucdict_t *d, const void *k, size_t kl,
-                                    const void *v, size_t vl) {
+static inline ucret_t ucdict_push_backl(ucdict_t *d, const void *k, size_t kl,
+                                        const void *v, size_t vl) {
   if (ucvec_push_backl(d->keys, k, kl) < 0) {
-    return -1;
+    return UCRET_ENOMEM;
   } else if (ucvec_push_backl(d->vals, v, vl) < 0) {
     ucvec_pop_back(d->keys);
-    return -1;
+    return UCRET_ENOMEM;
   }
-  return 0;
+  return UCRET_OK;
 }
 
 #endif // uCUTILS_DICT_H
