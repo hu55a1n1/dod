@@ -63,7 +63,7 @@ static inline int ucbytes_reserve(ucbytes_t **b, size_t nsz) {
   return 0;
 }
 
-static inline int ucbytes_writel_(ucbytes_t **b, void *v, size_t l) {
+static inline int ucbytes_writel_(ucbytes_t **b, const void *v, size_t l) {
   if (ucbytes_accomodate(b, l) != 0)
     return -1;
   (v != NULL) ? memcpy((*b)->data + (*b)->sz, v, l)
@@ -72,9 +72,10 @@ static inline int ucbytes_writel_(ucbytes_t **b, void *v, size_t l) {
   return 0;
 }
 
-static inline int ucbytes_write_range_atl_(ucbytes_t **b, unsigned char *pos,
-                                           unsigned char *start,
-                                           unsigned char *end) {
+static inline int ucbytes_write_range_atl_(ucbytes_t **b,
+                                           const unsigned char *pos,
+                                           const unsigned char *start,
+                                           const unsigned char *end) {
   if (start == NULL)
     return -1;
   size_t idx = 0;
@@ -92,8 +93,8 @@ static inline int ucbytes_write_range_atl_(ucbytes_t **b, unsigned char *pos,
   return 0;
 }
 
-static inline int ucbytes_write_atl_(ucbytes_t **b, unsigned char *pos,
-                                     unsigned char *val, size_t l) {
+static inline int ucbytes_write_atl_(ucbytes_t **b, const unsigned char *pos,
+                                     const unsigned char *val, size_t l) {
   size_t idx = 0;
   while (pos > (*b)->data) {
     idx++;

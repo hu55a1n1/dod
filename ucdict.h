@@ -46,8 +46,8 @@ static inline ucdict_t *ucdict_newl(size_t ksz, size_t vsz, size_t nmemb) {
   return d;
 }
 
-static inline int ucdict_push_backl(ucdict_t *d, void *k, size_t kl, void *v,
-                                    size_t vl) {
+static inline int ucdict_push_backl(ucdict_t *d, const void *k, size_t kl,
+                                    const void *v, size_t vl) {
   if (ucvec_push_backl(d->keys, k, kl) < 0) {
     return -1;
   } else if (ucvec_push_backl(d->vals, v, vl) < 0) {

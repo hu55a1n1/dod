@@ -66,12 +66,12 @@ static inline ucvec_t *ucvec_newl(size_t tsz, size_t n) {
   return v;
 }
 
-static inline int ucvec_push_backl(ucvec_t *v, void *val, size_t l) {
+static inline int ucvec_push_backl(ucvec_t *v, const void *val, size_t l) {
   v->l++;
   return ucbytes_writel_(&v->b, val, l);
 }
 
-static inline size_t ucvec_findl(ucvec_t *v, void *val, size_t l) {
+static inline size_t ucvec_findl(const ucvec_t *v, const void *val, size_t l) {
   for (size_t i = 0; i < v->l; i++)
     if (!memcmp(ucvec_data(v) + (i * l), val, l))
       return i;
@@ -89,7 +89,7 @@ static inline int ucvec_erase(ucvec_t *v, size_t pos) {
   return 0;
 }
 
-static inline int ucvec_resize(ucvec_t *v, size_t nsz, void *val) {
+static inline int ucvec_resize(ucvec_t *v, size_t nsz, const void *val) {
   if (nsz == v->l) {
     return 0;
   } else if (nsz > v->l) {
@@ -104,7 +104,8 @@ static inline int ucvec_resize(ucvec_t *v, size_t nsz, void *val) {
   return 0;
 }
 
-static inline int ucvec_assign_range(ucvec_t *v, void *start, void *end) {
+static inline int ucvec_assign_range(ucvec_t *v, const void *start,
+                                     const void *end) {
   if (!start || !end)
     return -1;
   else if (start > end)
@@ -119,7 +120,7 @@ static inline int ucvec_assign_range(ucvec_t *v, void *start, void *end) {
   return 0;
 }
 
-static inline int ucvec_assign_fill(ucvec_t *v, size_t n, void *val) {
+static inline int ucvec_assign_fill(ucvec_t *v, size_t n, const void *val) {
   ucvec_clear(v);
   while (n--)
     if (ucvec_push_backl(v, val, v->szmem) < 0)
@@ -127,8 +128,8 @@ static inline int ucvec_assign_fill(ucvec_t *v, size_t n, void *val) {
   return 0;
 }
 
-static inline int ucvec_insert_range(ucvec_t *v, void *pos, void *start,
-                                     void *end) {
+static inline int ucvec_insert_range(ucvec_t *v, const void *pos,
+                                     const void *start, const void *end) {
   size_t l = ((uintptr_t)end - (uintptr_t)start) / v->szmem;
   if (ucbytes_write_range_atl_(&v->b, pos, start, end) < 0)
     return -1;
@@ -136,7 +137,7 @@ static inline int ucvec_insert_range(ucvec_t *v, void *pos, void *start,
   return 0;
 }
 
-static inline int ucvec_insert(ucvec_t *v, void *pos, void *val) {
+static inline int ucvec_insert(ucvec_t *v, const void *pos, const void *val) {
   if (ucbytes_write_atl_(&v->b, pos, val, v->szmem) < 0)
     return -1;
   v->l++;
