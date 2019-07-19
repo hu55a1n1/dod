@@ -38,8 +38,18 @@
       (_v_)->b->sz -= (_v_)->szmem;                                            \
     }                                                                          \
   } while (0)
-//#define ucvec_insert(_v_) // todo
-//#define ucvec_swap(_v1_, _v2_) // todo
+#define ucvec_swap(_v1_, _v2_)                                                 \
+  do {                                                                         \
+    ucbytes_t *_b_ = (_v1_)->b;                                                \
+    size_t _l_ = (_v1_)->l;                                                    \
+    size_t _szmem_ = (_v1_)->szmem;                                            \
+    (_v1_)->b = (_v2_)->b;                                                     \
+    (_v1_)->l = (_v2_)->l;                                                     \
+    (_v1_)->szmem = (_v2_)->szmem;                                             \
+    (_v2_)->b = _b_;                                                           \
+    (_v2_)->l = _l_;                                                           \
+    (_v2_)->szmem = _szmem_;                                                   \
+  } while (0)
 #define ucvec_clear(_v_)                                                       \
   do {                                                                         \
     (_v_)->l = 0;                                                              \

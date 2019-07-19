@@ -197,6 +197,24 @@ static void test_ucvec_insert(void) {
   ucvec_free(v);
 }
 
+static void test_ucvec_swap(void) {
+  int vals1[] = {5, 4, 3, 2, 1};
+  size_t valsz1 = (sizeof(vals1) / sizeof(*vals1));
+  ucvec_t *v1 = ucvec_new(int, valsz1);
+  ucvec_assign_range(v1, vals1, vals1 + valsz1);
+  int vals2[] = {1, 2, 3, 4, 5};
+  size_t valsz2 = (sizeof(vals2) / sizeof(*vals2));
+  ucvec_t *v2 = ucvec_new(int, valsz2);
+  ucvec_assign_range(v2, vals2, vals2 + valsz2);
+  ucvec_swap(v1, v2);
+  for (size_t l = 0; l < ucvec_size(v1); ++l)
+    assert(*ucvec_at(v1, l) == vals2[l]);
+  for (size_t l = 0; l < ucvec_size(v2); ++l)
+    assert(*ucvec_at(v2, l) == vals1[l]);
+  ucvec_free(v2);
+  ucvec_free(v1);
+}
+
 int main(void) {
   TEST_PRINT_THEAD();
   test_ucvec_push_pop();
@@ -207,5 +225,6 @@ int main(void) {
   TEST_RUN("resize", test_ucvec_resize());
   TEST_RUN("assign", test_ucvec_assign());
   TEST_RUN("insert", test_ucvec_insert());
+  TEST_RUN("swap", test_ucvec_swap());
   return 0;
 }
