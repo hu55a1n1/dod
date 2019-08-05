@@ -49,7 +49,7 @@ static inline ucret_t ucbs_init(ucbs_t *bs, size_t bitlen) {
   return UCRET_OK;
 }
 
-static inline void ucbs_release(ucbs_t *bs) {
+static inline void ucbs_rel(ucbs_t *bs) {
   if (bs && !IS_ON_STACK(bs)) {
     free(bs->bits.h);
   }
