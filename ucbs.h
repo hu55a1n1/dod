@@ -10,9 +10,10 @@
 #define BIT_CLEAR(a, b) ((a) &= ~(1ULL << (b)))
 #define BIT_FLIP(a, b) ((a) ^= (1ULL << (b)))
 #define BIT_CHECK(a, b) (!!((a) & (1ULL << (b))))
+#define UCBS_ADJ_SZ(l) ((l / 8) + ((l % 8) ? 1 : 0))
 
 #define ucbs_t(l) struct { \
-  uint8_t bytes[(l / 8) + ((l % 8) ? 1 : 0)]; \
+  uint8_t bytes[UCBS_ADJ_SZ(l)]; \
 }
 
 #define ucbs_init(b, u) do { \
@@ -31,7 +32,7 @@
 
 #define ucbs_init_str(b, str) do { \
   size_t _i_ = 0; \
-  char *_s_ = str; \
+  char *_s_ = &str[strlen(str) - 1]; \
   uint8_t* _bp_ = b.bytes; \
   while(_s_ && (*_s_ != 0)) { \
     if (*_s_ == '1') BIT_SET(*_bp_, _i_); \
@@ -40,7 +41,7 @@
       _bp_++; \
       _i_ = 0; \
     } \
-    _s_++;\
+    _s_--;\
   } \
 } while(0)
 
@@ -49,5 +50,7 @@
     for (int _j_ = 7; _j_ >= 0; _j_--) \
       printf("%u", BIT_CHECK(b.bytes[_i_], _j_) ? 1 : 0); \
 } while(0)
+
+#define ucbs_check(b, pos) BIT_CHECK(b.bytes[pos/8], pos%8U)
 
 #endif // uCUTILS_UCBS_H
