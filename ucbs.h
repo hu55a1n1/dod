@@ -2,59 +2,53 @@
 #define uCUTILS_UCBS_H
 
 #include "ucret.h"
-#include <limits.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define UCBS_SET(_a_, _b_) ((_a_) |= (1ULL << (_b_)))
-#define UCBS_CLEAR(_a_, _b_) ((_a_) &= ~(1ULL << (_b_)))
-#define UCBS_FLIP(_a_, _b_) ((_a_) ^= (1ULL << (_b_)))
-#define UCBS_CHECK(_a_, _b_) (!!((_a_) & (1ULL << (_b_))))
-#define UCBS_MASK_SET(_x_, _y_) ((_x_) |= (_y_))
-#define UCBS_MASK_CLEAR(_x_, _y_) ((_x_) &= (~(_y_)))
-#define UCBS_MASK_FLIP(_x_, _y_) ((_x_) ^= (_y_))
-#define UCBS_MASK_CHECK_ALL(_x_, _y_) (((_x_) & (_y_)) == (_y_))
-#define UCBS_ASK_CHECK_ANY(_x_, _y_) ((_x_) & (_y_))
+#define BIT_SET(a, b) ((a) |= (1ULL << (b)))
+#define BIT_CLEAR(a, b) ((a) &= ~(1ULL << (b)))
+#define BIT_FLIP(a, b) ((a) ^= (1ULL << (b)))
+#define BIT_CHECK(a, b) (!!((a) & (1ULL << (b))))
 
-#define STACK_BITS (sizeof(uintptr_t) * CHAR_BIT)
-#define FITS_ON_STACK(_l_) ((_l_) <= STACK_BITS)
-#define IS_ON_STACK(_bs_) ((_bs_)->sz <= STACK_BITS)
-#define UDIV_UP(a, b) (((a) + (b)-1) / (b))
-#define ALIGN_UP(a, b) (UDIV_UP(a, b) * (b))
-#define ALIGN_UP_BITS(a) ALIGN_UP(a, STACK_BITS)
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
-
-typedef struct {
-  union {
-    uintptr_t s;
-    unsigned char *h;
-  } bits;
-  size_t sz;
-} ucbs_t;
-
-typedef enum { UCBS_SET = 0, UCBS_CLEAR, UCBS_TOGGLE } bs_op_t;
-
-static inline ucret_t ucbs_init(ucbs_t *bs, size_t bitlen) {
-  if (bs == NULL || !bitlen)
-    return UCRET_EPARAM;
-  if (FITS_ON_STACK(bitlen)) {
-    bs->sz = STACK_BITS;
-    bs->bits.s = 0;
-  } else {
-    bs->sz = ALIGN_UP_BITS(bitlen);
-    bs->bits.h = calloc(1, (bs->sz / STACK_BITS) + 1);
-    if (bs->bits.h == NULL)
-      return UCRET_ENOMEM;
-  }
-  return UCRET_OK;
+#define ucbs_t(l) struct { \
+  uint8_t bytes[(l / 8) + ((l % 8) ? 1 : 0)]; \
 }
 
-static inline void ucbs_rel(ucbs_t *bs) {
-  if (bs && !IS_ON_STACK(bs)) {
-    free(bs->bits.h);
-  }
-}
+#define ucbs_init(b, u) do { \
+  size_t _usz_ = sizeof(b.bytes); \
+  uint8_t* _bp_ = b.bytes; \
+  while(_usz_) { \
+    for (int _i_ = 7; _i_ >= 0; _i_--) {\
+      size_t _x_ = ((_usz_ - 1) * 8) + _i_;\
+      printf("-- [%lu]: %lu\n", _usz_, _x_);\
+      if (BIT_CHECK(u, _x_)) \
+        BIT_SET(*_bp_, _x_ % 8); \
+        } \
+    _bp_++; \
+    _usz_--; \
+    } \
+} while(0)
 
+#define ucbs_init_str(b, str) do { \
+  size_t _i_ = 0; \
+  char *_s_ = &str[strlen(str) - 1]; \
+  uint8_t* _bp_ = b.bytes + sizeof(b.bytes) -1; \
+  while(_s_ && (*_s_ != 0)) { \
+    if (*_s_ == '1') BIT_SET(*_bp_, _i_); \
+    _i_++; \
+    if (_i_ >= 8) { \
+      _bp_--; \
+      _i_ = 0; \
+    } \
+    _s_--;\
+  } \
+} while(0)
 
-
+#define ucbs_print(b) do { \
+  for (size_t _i_ = 0; _i_ < sizeof(b.bytes); ++_i_) \
+    for (int _j_ = 7; _j_ >= 0; _j_--) \
+      printf("%u", BIT_CHECK(b.bytes[_i_], _j_) ? 1 : 0); \
+} while(0)
+  
 #endif // uCUTILS_UCBS_H

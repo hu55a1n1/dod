@@ -1,19 +1,14 @@
-#include "ucbs.h"
 #include <assert.h>
 #include <stdio.h>
+#include "ucbs.h"
 
 int main(void) {
-  ucbs_t bs;
-  assert(ucbs_init(&bs, 16) == UCRET_OK);
-  ucbs_rel(&bs);
-  assert(ucbs_init(&bs, 32) == UCRET_OK);
-  ucbs_rel(&bs);
-  assert(ucbs_init(&bs, 64) == UCRET_OK);
-  ucbs_rel(&bs);
-  assert(ucbs_init(&bs, 128) == UCRET_OK);
-  ucbs_rel(&bs);
-  assert(ucbs_init(&bs, 987987349887687687) == UCRET_OK);
-  printf("%llu\n", bs.sz);
-  ucbs_rel(&bs);
+  ucbs_t(9) bs9 = {.bytes = {0}};
+  ucbs_init(bs9, 10);
+  ucbs_print(bs9);
+  printf("\n");
+  ucbs_t(9) bs8 = {.bytes = {0}};
+  ucbs_init_str(bs8, "101101011");
+  ucbs_print(bs8);
   return 0;
 }
