@@ -8,7 +8,7 @@
 } while (0)
 
 #define test_access_funcs(l, str, cnt, any, none, all) do { \
-  ucbs_t(l) _bs_ = {.bytes = {0}}; \
+  ucbs_t_decl(_bs_, l); \
   ucbs_init_str(_bs_, str); \
   assert(ucbs_count(_bs_) == cnt); \
   assert(ucbs_size(_bs_) == UCBS_ARR_SZ(_bs_) * UCBS_T_BIT); \
@@ -43,9 +43,9 @@ static void test_init(void) {
 
 static void test_access(void) {
   test_access_funcs(16, "1111111100000000", 8, true, false, false);
-  test_access_funcs(16, "1111111111111111", 16, true, false, false);
+  test_access_funcs(16, "1111111111111111", 16, true, false, true);
   test_access_funcs(16, "0", 0, false, true, false);
-  test_access_funcs(8, "11111111", 8, true, false, false);
+  test_access_funcs(8, "11111111", 8, true, false, true);
   test_access_funcs(8, "0000", 0, false, true, false);
   test_access_funcs(8, "10000000", 1, true, false, false);
   test_access_funcs(8, "1111111", 7, true, false, false);
