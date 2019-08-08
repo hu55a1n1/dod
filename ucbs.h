@@ -26,8 +26,8 @@ typedef size_t ucbs_storage_t;
 #define ucbs_t_decl_ptr(b, l) ucbs_t(l) *b = memcpy(malloc(sizeof(*b)), &(ucbs_t(l)){.bytes = {0}, .len = l}, sizeof(*b));
 
 #define ucbs_init(b, u) do { \
-  size_t _usz_ = sizeof((b).bytes); \
-  ucbs_storage_t* _bp_ = (b).bytes + _usz_ - 1; \
+  size_t _usz_ = UCBS_ARR_SZ(b); \
+  ucbs_storage_t* _bp_ = &(b).bytes[_usz_ - 1]; \
   while(_usz_) { \
     for (int _i_ = UCBS_T_BIT - 1; _i_ >= 0; _i_--) { \
       size_t _x_ = ((_usz_ - 1) * UCBS_T_BIT) + _i_;\
