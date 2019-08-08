@@ -52,7 +52,7 @@ static void test_access(void) {
 }
 
 static void test_operations(void) {
-  ucbs_t_decl(bs, 16);
+  ucbs_t_decl(bs, 128);
   ucbs_init_str(bs, "0");
   ucbs_setall(bs);
   assert(ucbs_all(bs) == true);
@@ -62,10 +62,13 @@ static void test_operations(void) {
   assert(ucbs_all(bs) == true);
   for (size_t i = 0; i < 15; i += 2)
     ucbs_flip(bs, i);
-  ucbs_t_decl(bs_flip, 16);
-  ucbs_init_str(bs_flip, "0101010101010101");
+  ucbs_t_decl_ptr(bs_flip, 128);
+  ucbs_init_str(*bs_flip, "0101010101010101");
   ucbs_flipall(bs);
-  assert(ucbs_equals(bs, bs_flip));
+  assert(ucbs_equals(bs, *bs_flip));
+  free(bs_flip);
+  ucbs_resetall(bs);
+  assert(ucbs_none(bs) == true);
 }
 
 int main(void) {
