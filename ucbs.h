@@ -58,7 +58,8 @@ typedef size_t ucbs_storage_t;
   size_t _sz_ = UCBS_ARR_SZ(b); \
   for (size_t _i_ = 0; _i_ < _sz_; ++_i_) { \
     for (size_t _j_ = 0; _j_ < UCBS_T_BIT; ++_j_) { \
-      printf("%u", BIT_CHECK((b).bytes[_i_], _j_) ? 1 : 0); \
+      if (_i_ >= (_sz_ - 1) && _j_ >= (b).len) break; \
+      printf("%u", BIT_CHECK((b).bytes[_sz_ - _i_ - 1], UCBS_T_BIT - _j_ - 1) ? 1 : 0); \
     } \
   } \
 } while(0)
