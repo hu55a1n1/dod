@@ -3,7 +3,7 @@
 #include "ucbs.h"
 
 #define BS_ASSERT_SIZE(sz) do {\
-  ucbs_t(sz) bs##sz = {.bytes = {0}};\
+  ucbs_t_decl(bs##sz, sz);\
   assert(sizeof(bs##sz.bytes) == (UCBS_ADJ_SZ(sz) * sizeof(ucbs_storage_t))); \
 } while (0)
 
@@ -30,12 +30,12 @@ static void test_size(void) {
 }
 
 static void test_init(void) {
-  ucbs_t(16) bs1 = {.bytes = {0}};
+  ucbs_t_decl(bs1, 16);
   ucbs_init(bs1, 43690U); // 43690 == b1010101010101010
   for (int i = 0; i < 16; ++i)
     assert(ucbs_test(bs1, i) == ((i % 2) ? true : false));
 
-  ucbs_t(16) bs2 = {.bytes = {0}};
+  ucbs_t_decl(bs2, 16);
   ucbs_init_str(bs2, "1010101010101010");
   for (int i = 0; i < 16; ++i)
     assert(ucbs_test(bs2, i) == ((i % 2) ? true : false));
@@ -62,7 +62,7 @@ static void test_operations(void) {
   assert(ucbs_all(bs) == true);
   for (size_t i = 0; i < 15; i += 2)
     ucbs_flip(bs, i);
-  ucbs_t(16) bs_flip = {.bytes = {0}};
+  ucbs_t_decl(bs_flip, 16);
   ucbs_init_str(bs_flip, "0101010101010101");
   ucbs_flipall(bs);
   assert(ucbs_equals(bs, bs_flip));
