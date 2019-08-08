@@ -90,6 +90,11 @@ typedef size_t ucbs_storage_t;
   } \
 } while (0)
 
+// Bitset operations
+#define ucbs_to_string(b) ucbs_to_string_(b.bytes, (b).len, UCBS_ARR_SZ(b))
+#define ucbs_to_ulong(b) ucbs_to_ulong_(b.bytes)
+#define ucbs_to_ullong(b) ucbs_to_ullong_(b.bytes)
+
 static inline bool
 ucbs_equals_(const ucbs_storage_t *bytes1, size_t l1, const ucbs_storage_t *bytes2, size_t l2, size_t sz) {
   if (l1 != l2)
@@ -141,6 +146,31 @@ static inline bool ucbs_all_(const ucbs_storage_t *bytes, size_t l, size_t sz) {
     }
   }
   return true;
+}
+
+static inline char *ucbs_to_string_(const ucbs_storage_t *bytes, size_t l, size_t sz) {
+  char *str = malloc(l + 1);
+  str[l] = '\0';
+  for (size_t i = 0; i < sz; ++i) {
+    for (size_t j = 0; j < UCBS_T_BIT; ++j) {
+      if (i >= (sz - 1) && j >= l)
+        break;
+      str[(i * UCBS_T_BIT) + j] = (BIT_CHECK(bytes[sz - i - 1], UCBS_T_BIT - j - 1) == 1) ? '1' : '0';
+    }
+  }
+  return str;
+}
+
+static inline unsigned long ucbs_to_ulong_(const ucbs_storage_t *bytes) {
+  unsigned long tmp;
+  memcpy(&tmp, bytes, sizeof(tmp));
+  return tmp;
+}
+
+static inline unsigned long long ucbs_to_ullong_(const ucbs_storage_t *bytes) {
+  unsigned long long tmp;
+  memcpy(&tmp, bytes, sizeof(tmp));
+  return tmp;
 }
 
 #endif // uCUTILS_UCBS_H
