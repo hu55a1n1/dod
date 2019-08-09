@@ -7,6 +7,19 @@ The API is (almost) complaint with STL's `std::bitset` with a few exceptions (se
 The implementation tries to stick to the STL implementation otherwise unless specified.
 
 
+### Usage
+For more examples see `test_ucbs.c`.
+```c
+ucbs_t_decl(bs1, 16);           // Create bitset of length 16
+ucbs_init(bs1, 43690U);         // Initialize by value - 43690 == b1010101010101010
+ucbs_flipall(bs);               // Flip all bits
+assert(ucbs_any(bs) == true);   // Check if any bit is set
+assert(ucbs_none(bs) == false); // Check if no bit is set
+ucbs_setall(bs);                // Set all bits
+assert(ucbs_all(bs) == true);   // Check if all bits are set
+```
+
+
 ### Constructors
 `std::bitset` provides 3 types of constructors -
 * default constructor - The object is initialized with zeros.
