@@ -8,16 +8,17 @@
 #include <stdbool.h>
 #include <limits.h>
 
-typedef size_t ucbs_storage_t;
-#define UCBS_T_BIT (sizeof(ucbs_storage_t) * CHAR_BIT)
-#define UCBS_ARR_SZ(b) (sizeof((b).bytes)/sizeof(ucbs_storage_t))
-
+// Bit manipulation
 #define BIT_SET(a, b) ((a) |= (1ULL << (b)))
 #define BIT_CLEAR(a, b) ((a) &= ~(1ULL << (b)))
 #define BIT_FLIP(a, b) ((a) ^= (1ULL << (b)))
 #define BIT_CHECK(a, b) (!!((a) & (1ULL << (b))))
-#define UCBS_ADJ_SZ(l) ((l / UCBS_T_BIT) + ((l % UCBS_T_BIT) ? 1 : 0))
 
+// ucbs specific macros and types
+typedef size_t ucbs_storage_t;
+#define UCBS_T_BIT (sizeof(ucbs_storage_t) * CHAR_BIT)
+#define UCBS_ARR_SZ(b) (sizeof((b).bytes)/sizeof(ucbs_storage_t))
+#define UCBS_ADJ_SZ(l) ((l / UCBS_T_BIT) + ((l % UCBS_T_BIT) ? 1 : 0))
 #define ucbs_t(l) struct { \
   ucbs_storage_t bytes[UCBS_ADJ_SZ(l)]; \
   size_t len; \
@@ -25,6 +26,7 @@ typedef size_t ucbs_storage_t;
 #define ucbs_t_decl(b, l) ucbs_t(l) b = {.bytes = {0}, .len = l };
 #define ucbs_t_decl_ptr(b, l) ucbs_t(l) *b = memcpy(malloc(sizeof(*b)), &(ucbs_t(l)){.bytes = {0}, .len = l}, sizeof(*b));
 
+// Constructors
 #define ucbs_init(b, u) do { \
   size_t _usz_ = UCBS_ARR_SZ(b); \
   ucbs_storage_t* _bp_ = &(b).bytes[_usz_ - 1]; \
@@ -38,7 +40,6 @@ typedef size_t ucbs_storage_t;
     _usz_--; \
     } \
 } while(0)
-
 #define ucbs_init_str(b, str) do { \
   size_t _i_ = 0; \
   char *_s_ = &str[strlen(str) - 1]; \
@@ -54,6 +55,7 @@ typedef size_t ucbs_storage_t;
   } \
 } while(0)
 
+// Helpers
 #define ucbs_print(b) do { \
   size_t _sz_ = UCBS_ARR_SZ(b); \
   for (size_t _i_ = 0; _i_ < _sz_; ++_i_) { \
@@ -63,8 +65,6 @@ typedef size_t ucbs_storage_t;
     } \
   } \
 } while(0)
-
-// Helpers
 #define ucbs_equals(b1, b2) ucbs_equals_((b1).bytes, (b1).len, (b2).bytes, (b2).len, UCBS_ARR_SZ(b1))
 
 // Bit access
@@ -96,6 +96,7 @@ typedef size_t ucbs_storage_t;
 #define ucbs_to_ulong(b) ucbs_to_ulong_(b.bytes)
 #define ucbs_to_ullong(b) ucbs_to_ullong_(b.bytes)
 
+// Internal functions
 static inline bool
 ucbs_equals_(const ucbs_storage_t *bytes1, size_t l1, const ucbs_storage_t *bytes2, size_t l2, size_t sz) {
   if (l1 != l2)
