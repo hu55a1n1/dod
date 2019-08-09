@@ -64,11 +64,11 @@ ucbs_init_str(bs2, "1010101010101010");
 
 
 ### Bitset operations
-| Function  | Use                              | Equivalent function in ucbs.h | Notes                                                                                                                 |
-|-----------|----------------------------------|-------------------------------|-----------------------------------------------------------------------------------------------------------------------|
-| to_string | Convert to string                | `ucbs_to_string(bs)`          | Returns a `char *` that must be freed after usage.                                                                    |
-| to_ulong  | Convert to unsigned long integer | `ucbs_to_ulong(bs)`           | Internally creates a temporary `unsigned long` variable and reads to it using `memcpy` to void alignment issues.      |
-| to_ullong | Convert to unsigned long long    | `ucbs_to_ullong(bs, pos)`     | Internally creates a temporary `unsigned long long` variable and reads to it using `memcpy` to void alignment issues. |
+| Function  | Use                              | Equivalent function in ucbs.h | Notes                                                                                                                  |
+|-----------|----------------------------------|-------------------------------|------------------------------------------------------------------------------------------------------------------------|
+| to_string | Convert to string                | `ucbs_to_string(bs)`          | Returns a `char *` that must be freed after usage.                                                                     |
+| to_ulong  | Convert to unsigned long integer | `ucbs_to_ulong(bs)`           | Internally creates a temporary `unsigned long` variable and reads to it using `memcpy` to avoid alignment issues.      |
+| to_ullong | Convert to unsigned long long    | `ucbs_to_ullong(bs, pos)`     | Internally creates a temporary `unsigned long long` variable and reads to it using `memcpy` to avoid alignment issues. |
 
 
 **Note:** Direct use of bitwise operators is unsupported.
