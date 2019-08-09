@@ -23,8 +23,9 @@ typedef size_t ucbs_storage_t;
   ucbs_storage_t bytes[UCBS_ADJ_SZ(l)]; \
   size_t len; \
 }
-#define ucbs_t_decl(b, l) ucbs_t(l) b = {.bytes = {0}, .len = l }
-#define ucbs_t_decl_ptr(b, l) ucbs_t(l) *b = memcpy(malloc(sizeof(*b)), &(ucbs_t(l)){.bytes = {0}, .len = l}, sizeof(*b))
+#define ucbs_t_default(l) {.bytes = {0}, .len = l}
+#define ucbs_t_decl(b, l) ucbs_t(l) b = ucbs_t_default(l)
+#define ucbs_t_decl_ptr(b, l) ucbs_t(l) *b = memcpy(malloc(sizeof(*b)), &(ucbs_t(l))ucbs_t_default(l), sizeof(*b))
 
 // Constructors
 #define ucbs_init(b, u) do { \
