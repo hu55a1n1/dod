@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "ucbs.h"
 
+#define ULL_BIN_STR "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+
 #define BS_ASSERT_SIZE(sz) do {\
   ucbs_t_decl(bs##sz, sz);\
   assert(sizeof(bs##sz.bytes) == (UCBS_ADJ_SZ(sz) * sizeof(ucbs_storage_t))); \
@@ -41,7 +43,7 @@ static void test_init(void) {
     assert(ucbs_test(bs2, i) == ((i % 2) ? true : false));
 }
 
-static void test_access(void) {
+static void test_bit_access(void) {
   test_access_funcs(16, "1111111100000000", 8, true, false, false);
   test_access_funcs(16, "1111111111111111", 16, true, false, true);
   test_access_funcs(16, "0", 0, false, true, false);
@@ -51,7 +53,7 @@ static void test_access(void) {
   test_access_funcs(8, "1111111", 7, true, false, false);
 }
 
-static void test_operations(void) {
+static void test_bit_ops(void) {
   ucbs_t_decl(bs, 128);
   ucbs_init_str(bs, "0");
   ucbs_setall(bs);
@@ -71,10 +73,26 @@ static void test_operations(void) {
   assert(ucbs_none(bs) == true);
 }
 
+static void test_bitset_ops(void) {
+  ucbs_t_decl(bs1, 128);
+  ucbs_init(bs1, ULONG_MAX);
+  assert(ULONG_MAX == ucbs_to_ulong(bs1));
+  ucbs_resetall(bs1);
+  ucbs_init(bs1, ULONG_LONG_MAX);
+  assert(ULONG_LONG_MAX == ucbs_to_ullong(bs1));
+
+  ucbs_t_decl(bs2, 128);
+  ucbs_init_str(bs2, ULL_BIN_STR);
+  char *bs1_str = ucbs_to_string(bs1);
+  assert(!strcmp(ULL_BIN_STR, bs1_str));
+  free(bs1_str);
+}
+
 int main(void) {
   test_size();
   test_init();
-  test_access();
-  test_operations();
+  test_bit_access();
+  test_bit_ops();
+  test_bitset_ops();
   return 0;
 }
