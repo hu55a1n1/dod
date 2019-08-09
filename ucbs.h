@@ -1,8 +1,6 @@
 #ifndef uCUTILS_UCBS_H
 #define uCUTILS_UCBS_H
 
-#include "ucret.h"
-#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
