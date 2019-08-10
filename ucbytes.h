@@ -6,36 +6,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define ucbytes_free(_b_) free(_b_)
-#define ucbytes_write(_b_, _vptr_) ucbytes_writel_(_b_, _vptr_, sizeof(*_vptr_))
-#define ucbytes_read(_b_, _pos_, _vptr_)                                       \
-  ucbytes_readl_(_b_, _pos_, _vptr_, sizeof(*_vptr_))
-#define ucbytes_print(_b_, _f_)                                                \
+#define ucbytes_free(b) free(b)
+#define ucbytes_write(b, vptr) ucbytes_writel_(b, vptr, sizeof(*vptr))
+#define ucbytes_read(b, pos, vptr)                                       \
+  ucbytes_readl_(b, pos, vptr, sizeof(*vptr))
+#define ucbytes_print(b, f)                                                \
   do {                                                                         \
-    for (size_t i = 0; i < (_b_)->sz; i++)                                     \
-      fprintf(_f_, "%02x", (_b_)->data[i]);                                    \
-    fprintf(_f_, "\n");                                                        \
+    for (size_t i = 0; i < (b)->sz; i++)                                     \
+      fprintf(f, "%02x", (b)->data[i]);                                    \
+    fprintf(f, "\n");                                                        \
   } while (0)
-#define ucbytes_size(_b_) ((_b_)->sz)
-#define ucbytes_set_size(_b_, _nsz_)                                           \
+#define ucbytes_size(b) ((b)->sz)
+#define ucbytes_set_size(b, nsz)                                           \
   do {                                                                         \
-    (_b_)->sz = _nsz_;                                                         \
+    (b)->sz = nsz;                                                         \
   } while (0)
-#define ucbytes_capacity(_b_) ((_b_)->cap)
-#define ucbytes_data(_b_) ((_b_)->data)
-#define ucbytes_accomodate(_bp_, _inc_)                                        \
-  ucbytes_reserve(_bp_, (*_bp_)->sz + _inc_)
-#define ucbytes_shrink_to_fit(_b_) ucbytes_shrink(_b_, (_b_)->sz)
-#define ucbytes_clear(_b_) ((_b_)->sz = 0)
+#define ucbytes_capacity(b) ((b)->cap)
+#define ucbytes_data(b) ((b)->data)
+#define ucbytes_accomodate(bp, inc)                                        \
+  ucbytes_reserve(bp, (*bp)->sz + inc)
+#define ucbytes_shrink_to_fit(b) ucbytes_shrink(b, (b)->sz)
+#define ucbytes_clear(b) ((b)->sz = 0)
 
 typedef struct {
-  size_t sz;
-  size_t cap;
-  unsigned char data[];
+    size_t sz;
+    size_t cap;
+    unsigned char data[];
 } ucbytes_t;
 
 static inline ucbytes_t *ucbytes_new(size_t sz) {
-  ucbytes_t *cb = (ucbytes_t *)malloc(sizeof(*cb) + sz);
+  ucbytes_t *cb = (ucbytes_t *) malloc(sizeof(*cb) + sz);
   if (!cb) {
     free(cb);
     return NULL;
@@ -55,7 +55,7 @@ static inline ucret_t ucbytes_reserve(ucbytes_t **b, size_t nsz) {
   while (ncap < nsz) {
     ncap *= 2;
   }
-  ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + ncap);
+  ucbytes_t *b_ = (ucbytes_t *) realloc(*b, sizeof(*b_) + ncap);
   if (!b_)
     return UCRET_ENOMEM;
   *b = b_;
@@ -125,7 +125,7 @@ static inline ucret_t ucbytes_shrink(ucbytes_t **b, size_t nsz) {
     return UCRET_OK;
   else if (nsz > (*b)->cap || nsz < (*b)->sz)
     return UCRET_EPARAM;
-  ucbytes_t *b_ = (ucbytes_t *)realloc(*b, sizeof(*b_) + nsz);
+  ucbytes_t *b_ = (ucbytes_t *) realloc(*b, sizeof(*b_) + nsz);
   if (!b_)
     return UCRET_ENOMEM;
   *b = b_;

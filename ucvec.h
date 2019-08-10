@@ -3,63 +3,63 @@
 
 #include "ucbytes.h"
 
-#define ucvec_new(_t_, _n_) ucvec_newl(sizeof(_t_), _n_)
-#define ucvec_free(_v_)                                                        \
+#define ucvec_new(t, n) ucvec_newl(sizeof(t), n)
+#define ucvec_free(v)                                                        \
   do {                                                                         \
-    if ((_v_) != NULL)                                                         \
-      ucbytes_free((_v_)->b);                                                  \
-    free(_v_);                                                                 \
+    if ((v) != NULL)                                                         \
+      ucbytes_free((v)->b);                                                  \
+    free(v);                                                                 \
   } while (0)
-#define ucvec_find(_v_, _val_) ucvec_findl(_v_, _val_, (_v_)->szmem)
+#define ucvec_find(v, val) ucvec_findl(v, val, (v)->szmem)
 
 // capacity
-#define ucvec_size(_v_) ((_v_)->l)
-//#define ucvec_max_size(_v_) // todo
-#define ucvec_capacity(_v_) (ucbytes_capacity((_v_)->b) / (_v_)->szmem)
-#define ucvec_empty(_v_) ((_v_)->l == 0)
-#define ucvec_reserve(_v_, _n_) ucbytes_reserve(&(_v_)->b, (_n_) * (_v_)->szmem)
-#define ucvec_shrink_to_fit(_v_)                                               \
-  ucbytes_shrink(&(_v_)->b, (_v_)->l *(_v_)->szmem)
+#define ucvec_size(v) ((v)->l)
+//#define ucvec_max_size(v) // todo
+#define ucvec_capacity(v) (ucbytes_capacity((v)->b) / (v)->szmem)
+#define ucvec_empty(v) ((v)->l == 0)
+#define ucvec_reserve(v, n) ucbytes_reserve(&(v)->b, (n) * (v)->szmem)
+#define ucvec_shrink_to_fit(v)                                               \
+  ucbytes_shrink(&(v)->b, (v)->l *(v)->szmem)
 
 // Element access
-#define ucvec_data(_v_) ucbytes_data((_v_)->b)
-#define ucvec_at(_v_, _pos_) (ucvec_data(_v_) + (_pos_ * (_v_)->szmem))
-#define ucvec_front(_v_) ucvec_data(_v_)
-#define ucvec_back(_v_) (ucvec_data(_v_) + ((_v_)->l - 1) * (_v_)->szmem)
-#define ucvec_begin(_v_) ucvec_front(_v_)
-#define ucvec_end(_v_) (ucvec_data(_v_) + ((_v_)->l * (_v_)->szmem))
+#define ucvec_data(v) ucbytes_data((v)->b)
+#define ucvec_at(v, pos) (ucvec_data(v) + (pos * (v)->szmem))
+#define ucvec_front(v) ucvec_data(v)
+#define ucvec_back(v) (ucvec_data(v) + ((v)->l - 1) * (v)->szmem)
+#define ucvec_begin(v) ucvec_front(v)
+#define ucvec_end(v) (ucvec_data(v) + ((v)->l * (v)->szmem))
 
 // Modifiers
-#define ucvec_push_back(_v_, _val_) ucvec_push_backl(_v_, _val_, (_v_)->szmem)
-#define ucvec_pop_back(_v_)                                                    \
+#define ucvec_push_back(v, val) ucvec_push_backl(v, val, (v)->szmem)
+#define ucvec_pop_back(v)                                                    \
   do {                                                                         \
-    if ((_v_)->l) {                                                            \
-      (_v_)->l--;                                                              \
-      (_v_)->b->sz -= (_v_)->szmem;                                            \
+    if ((v)->l) {                                                            \
+      (v)->l--;                                                              \
+      (v)->b->sz -= (v)->szmem;                                            \
     }                                                                          \
   } while (0)
-#define ucvec_swap(_v1_, _v2_)                                                 \
+#define ucvec_swap(v1, v2)                                                 \
   do {                                                                         \
-    ucbytes_t *_b_ = (_v1_)->b;                                                \
-    size_t _l_ = (_v1_)->l;                                                    \
-    size_t _szmem_ = (_v1_)->szmem;                                            \
-    (_v1_)->b = (_v2_)->b;                                                     \
-    (_v1_)->l = (_v2_)->l;                                                     \
-    (_v1_)->szmem = (_v2_)->szmem;                                             \
-    (_v2_)->b = _b_;                                                           \
-    (_v2_)->l = _l_;                                                           \
-    (_v2_)->szmem = _szmem_;                                                   \
+    ucbytes_t *_b_ = (v1)->b;                                                \
+    size_t _l_ = (v1)->l;                                                    \
+    size_t _szmem_ = (v1)->szmem;                                            \
+    (v1)->b = (v2)->b;                                                     \
+    (v1)->l = (v2)->l;                                                     \
+    (v1)->szmem = (v2)->szmem;                                             \
+    (v2)->b = _b_;                                                           \
+    (v2)->l = _l_;                                                           \
+    (v2)->szmem = _szmem_;                                                   \
   } while (0)
-#define ucvec_clear(_v_)                                                       \
+#define ucvec_clear(v)                                                       \
   do {                                                                         \
-    (_v_)->l = 0;                                                              \
-    ucbytes_clear((_v_)->b);                                                   \
+    (v)->l = 0;                                                              \
+    ucbytes_clear((v)->b);                                                   \
   } while (0)
 
 typedef struct {
-  ucbytes_t *b;
-  size_t l;
-  size_t szmem;
+    ucbytes_t *b;
+    size_t l;
+    size_t szmem;
 } ucvec_t;
 
 static inline ucvec_t *ucvec_newl(size_t tsz, size_t n) {
@@ -119,9 +119,9 @@ static inline ucret_t ucvec_assign_range(ucvec_t *v, const void *start,
   if (!start || !end || (start > end))
     return UCRET_EPARAM;
   ucvec_clear(v);
-  uintptr_t p = (uintptr_t)start;
-  while (p < (uintptr_t)end) {
-    if (ucvec_push_backl(v, (void *)p, v->szmem) < 0)
+  uintptr_t p = (uintptr_t) start;
+  while (p < (uintptr_t) end) {
+    if (ucvec_push_backl(v, (void *) p, v->szmem) < 0)
       return UCRET_ENOMEM;
     p += v->szmem;
   }
@@ -138,7 +138,7 @@ static inline ucret_t ucvec_assign_fill(ucvec_t *v, size_t n, const void *val) {
 
 static inline ucret_t ucvec_insert_range(ucvec_t *v, const void *pos,
                                          const void *start, const void *end) {
-  size_t l = ((uintptr_t)end - (uintptr_t)start) / v->szmem;
+  size_t l = ((uintptr_t) end - (uintptr_t) start) / v->szmem;
   ucret_t r = ucbytes_write_range_atl_(&v->b, pos, start, end);
   if (r < 0)
     return r;

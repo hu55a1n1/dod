@@ -6,7 +6,7 @@
 
 #define BS_ASSERT_SIZE(sz) do {\
   ucbs_t_decl(bs##sz, sz);\
-  assert(sizeof(bs##sz.bytes) == (UCBS_ADJ_SZ(sz) * sizeof(ucbs_storage_t))); \
+  assert(sizeof(bs##sz.array) == (UCBS_ADJ_SZ(sz) * sizeof(ucbs_storage_t))); \
 } while (0)
 
 #define test_access_funcs(l, str, cnt, any, none, all) do { \
