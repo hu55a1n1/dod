@@ -1,6 +1,8 @@
 # ucutils
 Micro C utilities - Small header-only utilities written in C99.
 
+* [ucbs.h - C++ std::bitset for C](#ucbsh---c-stdbitset-for-c)
+* [ucvec.h - C++ std::vector for C](#ucvech---c-stdvector-for-c)
 
 ## ucbs.h - C++ std::bitset for C
 The API is (almost) complaint with STL's `std::bitset` with a few exceptions (see notes section below).
