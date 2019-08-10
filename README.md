@@ -113,17 +113,13 @@ The implementation tries to stick to the STL implementation unless otherwise spe
 ### Usage
 For more examples see `test_ucvec.c`.
 ```c
-ucvec_t *v = ucvec_new(int,10);                                                     // Create vector of ints and reserve space for 10 ints
-for (int i = 0; i < 5; ++i)                                                         // Push back 5 ints
-  ucvec_push_back(v, &i);                                                           // {0, 1, 2, 3, 4}
-assert(*ucvec_at(v, 2) == 2);                                                       // Check element at pos 2 is 2
-assert(!memcmp(ucvec_data(v), (int[]) {0, 1, 2, 3, 4}, sizeof(int) * 5));           // {0, 1, 2, 3, 4}
-ucvec_pop_back(v);                                                                  // Pop back
-assert(!memcmp(ucvec_data(v), (int[]) {0, 1, 2, 3}, sizeof(int) * 4));              // {0, 1, 2, 3}
-ucvec_erase(v, 0);                                                                  // Erase at pos 0
-assert(!memcmp(ucvec_data(v), (int[]) {1, 2, 3}, sizeof(int) * 3));                 // {1, 2, 3}
-int vals[] = {501, 502, 503};                                                       // Insert range using array
-ucvec_insert_range(v, ucvec_front(v), vals, vals + 3);                              // at front
-assert(!memcmp(ucvec_data(v), (int[]) {501, 502, 503, 1, 2, 3}, sizeof(int) * 3));  // {501, 502, 503, 1, 2, 3}
-ucvec_free(v);                                                                      // free after use
+ucvec_t *v = ucvec_new(int, 10);                        // Create vector of ints and reserve space for 10 ints
+for (int i = 0; i < 5; ++i)                             // Push back 5 ints
+  ucvec_push_back(v, &i);                               // >> {0, 1, 2, 3, 4}
+assert(*ucvec_at(v, 2) == 2);                           // Check element at pos 2 is 2
+ucvec_pop_back(v);                                      // Pop back >> {0, 1, 2, 3}
+ucvec_erase(v, 0);                                      // Erase at pos 0 >> {1, 2, 3}
+int vals[] = {501, 502, 503};                           // Insert range using array
+ucvec_insert_range(v, ucvec_front(v), vals, vals + 3);  // at front >> {501, 502, 503, 1, 2, 3}
+ucvec_free(v);                                          // free after use
 ```
