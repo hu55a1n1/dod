@@ -76,9 +76,9 @@ typedef size_t ucbs_storage_t;
 
 // Bit operations
 #define ucbs_set(bs, pos) BIT_SET((bs).bytes[pos/UCBS_T_BIT], pos%UCBS_T_BIT)
-#define ucbs_setall(bs) memset((bs).bytes, 0xff, sizeof((bs).bytes))
+#define ucbs_setall(bs) ((void) memset((bs).bytes, 0xff, sizeof((bs).bytes)))
 #define ucbs_reset(bs, pos) BIT_CLEAR((bs).bytes[pos/UCBS_T_BIT], pos%UCBS_T_BIT)
-#define ucbs_resetall(bs) memset((bs).bytes, 0, sizeof((bs).bytes))
+#define ucbs_resetall(bs) ((void) memset((bs).bytes, 0, sizeof((bs).bytes)))
 #define ucbs_flip(bs, pos) BIT_FLIP((bs).bytes[pos/UCBS_T_BIT], pos%UCBS_T_BIT)
 #define ucbs_flipall(bs) do { \
   size_t _sz_ = UCBS_ARR_SZ(bs); \

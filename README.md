@@ -71,11 +71,11 @@ ucbs_init_str(bs2, "1010101010101010");
 
 
 ### Bit operations
-| Function | Use        | Equivalent function in ucbs.h                  | Notes                                                                                                                                                                                                                            |
-|----------|------------|------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| set      | Set bits   | `ucbs_set(bs, pos)`/`ucbs_setall(bs)`          | `bitset& set() noexcept;` is equivalent to `ucbs_setall(bs)`. Note also that `ucbs_set(bs, pos)` has no `val` default arg unlike its c++ counterpart. Do NOT rely on the return values of these functions, treat them as `void`. |
-| reset    | Reset bits | `ucbs_reset(bs, pos)`/`ucbs_resetall(bs, pos)` | `bitset& reset() noexcept;` is equivalent to `ucbs_resetall(bs)`. Do NOT rely on the return values of these functions, treat them as `void`.                                                                                     |
-| flip     | Flip bits  | `ucbs_flip(bs, pos)`/`ucbs_flipall(bs)`        | `bitset& flip() noexcept;` is equivalent to `ucbs_flipall(bs)`. Do NOT rely on the return values of these functions, treat them as `void`.                                                                                       |
+| Function | Use        | Equivalent function in ucbs.h                  | Notes                                                                                                                                                                                                            |
+|----------|------------|------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| set      | Set bits   | `ucbs_set(bs, pos)`/`ucbs_setall(bs)`          | `bitset& set() noexcept;` is equivalent to `ucbs_setall(bs)`. Note also that `ucbs_set(bs, pos)` has no `val` default arg unlike its c++ counterpart. These functions return void unlike their C++ counterparts. |
+| reset    | Reset bits | `ucbs_reset(bs, pos)`/`ucbs_resetall(bs, pos)` | `bitset& reset() noexcept;` is equivalent to `ucbs_resetall(bs)`. These functions return void unlike their C++ counterparts.                                                                                     |
+| flip     | Flip bits  | `ucbs_flip(bs, pos)`/`ucbs_flipall(bs)`        | `bitset& flip() noexcept;` is equivalent to `ucbs_flipall(bs)`. These functions return void unlike their C++ counterparts.                                                                                       |
 
 
 ### Bitset operations
