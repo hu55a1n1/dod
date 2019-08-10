@@ -1,9 +1,9 @@
 # ucutils
 Micro C utilities - Small header-only utilities written in C99.
 
-* [ucbs.h - C++ std::bitset for C](#ucbsh---c-stdbitset-for-c)
-* [ucbytes.h - Byte manipulation utils](#ucbytesh---byte-manipulation-utils)
-* [ucvec.h - C++ std::vector for C](#ucvech---c-stdvector-for-c)
+* [ucbs.h](#ucbsh---c-stdbitset-for-c) - C++ std::bitset for C
+* [ucbytes.h](#ucbytesh---byte-manipulation-utils) - Byte manipulation utils
+* [ucvec.h](#ucvech---c-stdvector-for-c) - C++ std::vector for C
 
 ## ucbs.h - C++ std::bitset for C
 The API is (almost) complaint with STL's `std::bitset` with a few exceptions (see notes section below).
@@ -115,7 +115,7 @@ For more examples see `test_ucvec.c`.
 ```c
 ucvec_t *v = ucvec_new(int,10);                                                     // Create vector of ints and reserve space for 10 ints
 for (int i = 0; i < 5; ++i)                                                         // Push back 5 ints
-ucvec_push_back(v, &i);                                                             // {0, 1, 2, 3, 4}
+  ucvec_push_back(v, &i);                                                           // {0, 1, 2, 3, 4}
 assert(*ucvec_at(v, 2) == 2);                                                       // Check element at pos 2 is 2
 assert(!memcmp(ucvec_data(v), (int[]) {0, 1, 2, 3, 4}, sizeof(int) * 5));           // {0, 1, 2, 3, 4}
 ucvec_pop_back(v);                                                                  // Pop back
