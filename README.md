@@ -2,11 +2,12 @@
 Micro C utilities - Small header-only utilities written in C99.
 
 * [ucbs.h - C++ std::bitset for C](#ucbsh---c-stdbitset-for-c)
+* [ucbytes.h - Byte manipulation utils](#ucbytesh---byte-manipulation-utils)
 * [ucvec.h - C++ std::vector for C](#ucvech---c-stdvector-for-c)
 
 ## ucbs.h - C++ std::bitset for C
 The API is (almost) complaint with STL's `std::bitset` with a few exceptions (see notes section below).
-The implementation tries to stick to the STL implementation otherwise unless specified.
+The implementation tries to stick to the STL implementation unless otherwise specified.
 
 
 ### Usage
@@ -97,5 +98,32 @@ It also provides a convenient API where you don't have to always pass the length
 
 
 
-## ucvec.h - C++ std::vector for C
+## ucbytes.h - Byte manipulation utils
+This is a byte array that can grow in a logarithmic manner.
+It is implemented as the backend for the vector library and is not intended to be used in isolation.
+If you choose to use it as a standalone library make sure you understand *alignment* and its implications.
 
+
+
+## ucvec.h - C++ std::vector for C
+The API is (almost) complaint with STL's `std::vector` with a few exceptions (see notes section below).
+The implementation tries to stick to the STL implementation unless otherwise specified.
+
+
+### Usage
+For more examples see `test_ucvec.c`.
+```c
+ucvec_t *v = ucvec_new(int,10);                                                     // Create vector of ints and reserve space for 10 ints
+for (int i = 0; i < 5; ++i)                                                         // Push back 5 ints
+ucvec_push_back(v, &i);                                                             // {0, 1, 2, 3, 4}
+assert(*ucvec_at(v, 2) == 2);                                                       // Check element at pos 2 is 2
+assert(!memcmp(ucvec_data(v), (int[]) {0, 1, 2, 3, 4}, sizeof(int) * 5));           // {0, 1, 2, 3, 4}
+ucvec_pop_back(v);                                                                  // Pop back
+assert(!memcmp(ucvec_data(v), (int[]) {0, 1, 2, 3}, sizeof(int) * 4));              // {0, 1, 2, 3}
+ucvec_erase(v, 0);                                                                  // Erase at pos 0
+assert(!memcmp(ucvec_data(v), (int[]) {1, 2, 3}, sizeof(int) * 3));                 // {1, 2, 3}
+int vals[] = {501, 502, 503};                                                       // Insert range using array
+ucvec_insert_range(v, ucvec_front(v), vals, vals + 3);                              // at front
+assert(!memcmp(ucvec_data(v), (int[]) {501, 502, 503, 1, 2, 3}, sizeof(int) * 3));  // {501, 502, 503, 1, 2, 3}
+ucvec_free(v);                                                                      // free after use
+```
