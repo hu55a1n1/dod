@@ -1,6 +1,7 @@
+#include "ucbs.h"
+#include "uctest.h"
 #include <assert.h>
 #include <stdio.h>
-#include "ucbs.h"
 
 #define ULL_BIN_STR "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
 
@@ -89,10 +90,11 @@ static void test_bitset_ops(void) {
 }
 
 int main(void) {
-  test_size();
-  test_init();
-  test_bit_access();
-  test_bit_ops();
-  test_bitset_ops();
+  UCTEST_PRINT_THEAD();
+  UCTEST_RUN("storage size", test_size());
+  UCTEST_RUN("constructors", test_init());
+  UCTEST_RUN("bit access", test_bit_access());
+  UCTEST_RUN("bit operations", test_bit_ops());
+  UCTEST_RUN("bitset operations", test_bitset_ops());
   return 0;
 }
