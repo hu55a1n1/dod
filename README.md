@@ -1,12 +1,12 @@
 # ucutils
 Micro C utilities - Small header-only utilities written in C99.
 
-* [ucbs.h](#ucbsh---c-stdbitset-for-c) - C++ std::bitset for C
+* [ucbs.h](#ucbsh---a-feature-complete-bitset-for-c) - A feature-complete bitset for C
 * [ucbytes.h](#ucbytesh---byte-manipulation-utils) - Byte manipulation utils
-* [ucvec.h](#ucvech---c-stdvector-for-c) - C++ std::vector for C
+* [ucvec.h](#ucvech---a-feature-complete-generic-vector-for-c) - A feature-complete generic vector for C
 
-## ucbs.h - C++ std::bitset for C
-The API is (almost) complaint with STL's `std::bitset` with a few exceptions (see notes section below).
+## ucbs.h - A feature-complete bitset for C
+The API is (almost) complaint with C++ STL's `std::bitset` with a few exceptions (see notes section below).
 The implementation tries to stick to the STL implementation unless otherwise specified.
 
 
@@ -105,8 +105,8 @@ If you choose to use it as a standalone library make sure you understand *alignm
 
 
 
-## ucvec.h - C++ std::vector for C
-The API is (almost) complaint with STL's `std::vector` with a few exceptions (see notes section below).
+## ucvec.h - A feature-complete generic vector for C
+The API is (almost) complaint with C++ STL's `std::vector` with a few exceptions (see notes section below).
 The implementation tries to stick to the STL implementation unless otherwise specified.
 
 
