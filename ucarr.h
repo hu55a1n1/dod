@@ -12,7 +12,7 @@
   &(ucarr_t(t, l))ucarr_t_default(), sizeof(*arr))
 
 // Element access
-#define ucarr_at(arr, pos) ucarr_at_(arr, (arr).len, pos)
+#define ucarr_at(arr, pos) ((pos >= arr.len) ? NULL: (arr.data + pos))
 #define ucarr_front(arr) (arr)[0]
 #define ucarr_back(arr) (arr)[(arr).len - 1]
 #define ucarr_data(arr) (arr).data
@@ -35,12 +35,5 @@
   memcpy(&(arr1), &(arr2), sizeof(arr2)); \
   memcpy(&(arr2), (_arr_), _sz_); \
 } while (0)
-
-// Internal funcs
-static inline void *ucarr_at_(unsigned char *arr, size_t l, size_t pos) {
-  if (pos >= l)
-    return NULL;
-  return (arr + (pos * sizeof(*arr)));
-}
 
 #endif //uCUTILS_UCARR_H
