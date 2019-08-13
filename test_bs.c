@@ -69,7 +69,7 @@ static void test_bit_ops(void) {
   dodbs_init_str(*bs_flip, "0101010101010101");
   dodbs_flipall(bs);
   assert(dodbs_equals(bs, *bs_flip));
-  free(bs_flip);
+  dodbs_free(bs_flip);
   dodbs_resetall(bs);
   assert(dodbs_none(bs) == true);
 }
@@ -86,7 +86,7 @@ static void test_bitset_ops(void) {
   dodbs_init_str(bs2, ULL_BIN_STR);
   char *bs1_str = dodbs_to_string(bs1);
   assert(!strcmp(ULL_BIN_STR, bs1_str));
-  free(bs1_str);
+  dodbs_free(bs1_str);
 }
 
 int main(void) {

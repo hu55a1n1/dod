@@ -25,7 +25,7 @@ typedef size_t dodbs_storage_t;
 #define dodbs_t_decl(bs, l) dodbs_t(l) bs = dodbs_t_default(l)
 #define dodbs_t_decl_ptr(bs, l) dodbs_t(l) *bs = memcpy(malloc(sizeof(*bs)), &(dodbs_t(l))dodbs_t_default(l), sizeof(*bs))
 
-// Constructors
+// Constructors and destructors
 #define dodbs_init(bs, u) do { \
   size_t _usz_ = DODBS_ARR_SZ(bs); \
   dodbs_storage_t* _bp_ = &(bs).array[_usz_ - 1]; \
@@ -53,6 +53,7 @@ typedef size_t dodbs_storage_t;
     _s_--;\
   } \
 } while(0)
+#define dodbs_free(bs) free(bs)
 
 // Helpers
 #define dodbs_print(bs) do { \
