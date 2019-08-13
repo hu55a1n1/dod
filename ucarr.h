@@ -12,7 +12,7 @@
   &(ucarr_t(t, l))ucarr_t_default(), sizeof(*arr))
 
 // Element access
-#define ucarr_at(arr, pos) ((pos >= arr.len) ? NULL: (arr.data + pos))
+#define ucarr_at(arr, pos) ((pos >= (arr).len) ? NULL: ((arr).data + pos))
 #define ucarr_front(arr) (arr)[0]
 #define ucarr_back(arr) (arr)[(arr).len - 1]
 #define ucarr_data(arr) (arr).data
