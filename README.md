@@ -1,11 +1,45 @@
 # dodutils
-Micro C utilities - Small header-only utilities written in C99.
+Tools to facilitate data-oriented design in C99.
 
-* [dodbs.h](#dodbsh---a-feature-complete-bitset-for-c) - A feature-complete bitset for C
+If you are new to data-oriented design, [this](https://github.com/dbartolini/data-oriented-design) is a good place to start.
+
+This library provides the following utilities -
 * [dodbytes.h](#dodbytesh---byte-manipulation-utils) - Byte manipulation utils
-* [dodvec.h](#dodvech---a-feature-complete-generic-vector-for-c) - A feature-complete generic vector for C
+* [dodvec.h](#dodvech---a-feature-complete-generic-vector-implementation) - A feature-complete generic vector implementation
+* [dodbs.h](#dodbsh---a-feature-complete-bitset-implementation) - A feature-complete bitset implementation
+* [dodarr.h](#dodarrh---generic-array-with-value-semantics) - Generic array with value semantics and optional bounds checking
 
-## dodbs.h - A feature-complete bitset for C
+
+
+## dodbytes.h - Byte manipulation utils
+This is a byte array that can grow in a logarithmic manner.
+It is implemented as the backend for the vector library and is not intended to be used in isolation.
+If you choose to use it as a standalone library make sure you understand *alignment* and its implications.
+
+
+
+## dodvec.h - A feature-complete generic vector implementation
+The API is (almost) complaint with C++ STL's `std::vector` with a few exceptions (see notes section below).
+The implementation tries to stick to the STL implementation unless otherwise specified.
+
+
+### Usage
+For more examples see `test_dodvec.c`.
+```c
+dodvec_t *v = dodvec_new(int, 10);                        // Create vector of ints and reserve space for 10 ints
+for (int i = 0; i < 5; ++i)                             // Push back 5 ints
+  dodvec_push_back(v, &i);                               // >> {0, 1, 2, 3, 4}
+assert(*dodvec_at(v, 2) == 2);                           // Check element at pos 2 is 2
+dodvec_pop_back(v);                                      // Pop back >> {0, 1, 2, 3}
+dodvec_erase(v, 0);                                      // Erase at pos 0 >> {1, 2, 3}
+int vals[] = {501, 502, 503};                           // Insert range using array
+dodvec_insert_range(v, dodvec_front(v), vals, vals + 3);  // at front >> {501, 502, 503, 1, 2, 3}
+dodvec_free(v);                                          // free after use
+```
+
+
+
+## dodbs.h - A feature-complete bitset implementation
 The API is (almost) complaint with C++ STL's `std::bitset` with a few exceptions (see notes section below).
 The implementation tries to stick to the STL implementation unless otherwise specified.
 
@@ -98,28 +132,5 @@ It also provides a convenient API where you don't have to always pass the length
 
 
 
-## dodbytes.h - Byte manipulation utils
-This is a byte array that can grow in a logarithmic manner.
-It is implemented as the backend for the vector library and is not intended to be used in isolation.
-If you choose to use it as a standalone library make sure you understand *alignment* and its implications.
+## dodbs.h - Generic array with value semantics
 
-
-
-## dodvec.h - A feature-complete generic vector for C
-The API is (almost) complaint with C++ STL's `std::vector` with a few exceptions (see notes section below).
-The implementation tries to stick to the STL implementation unless otherwise specified.
-
-
-### Usage
-For more examples see `test_dodvec.c`.
-```c
-dodvec_t *v = dodvec_new(int, 10);                        // Create vector of ints and reserve space for 10 ints
-for (int i = 0; i < 5; ++i)                             // Push back 5 ints
-  dodvec_push_back(v, &i);                               // >> {0, 1, 2, 3, 4}
-assert(*dodvec_at(v, 2) == 2);                           // Check element at pos 2 is 2
-dodvec_pop_back(v);                                      // Pop back >> {0, 1, 2, 3}
-dodvec_erase(v, 0);                                      // Erase at pos 0 >> {1, 2, 3}
-int vals[] = {501, 502, 503};                           // Insert range using array
-dodvec_insert_range(v, dodvec_front(v), vals, vals + 3);  // at front >> {501, 502, 503, 1, 2, 3}
-dodvec_free(v);                                          // free after use
-```
