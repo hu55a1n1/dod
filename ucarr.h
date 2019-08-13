@@ -42,4 +42,10 @@
   memcpy(&(arr2), (_arr_), _sz_); \
 } while (0)
 
+// Non-member functions
+#define ucarr_to_array(arr, a, l) do { \
+  for (size_t _i_ = 0; _i_ < sizeof(arr) && _i_ < l; ++_i_) \
+    (arr).data[_i_] = a[_i_]; \
+} while (0)
+
 #endif //uCUTILS_UCARR_H
