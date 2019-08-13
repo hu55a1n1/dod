@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.9)
-project(ucutils)
+project(dodutils)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "-O3 -g -pedantic-errors -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual \
         -Wstrict-prototypes -Wmissing-prototypes")
 
-add_executable(test_ucvec test_ucvec.c ucret.h ucbytes.h ucvec.h)
-add_executable(test_ucdict test_ucdict.c ucret.h ucbytes.h ucvec.h ucdict.h)
-add_executable(test_ucbs test_ucbs.c ucbs.h)
+add_executable(test_vec test_vec.c dodret.h dodbytes.h dodvec.h)
+add_executable(test_dict test_dict.c dodret.h dodbytes.h dodvec.h doddict.h)
+add_executable(test_bs test_bs.c dodbs.h)
