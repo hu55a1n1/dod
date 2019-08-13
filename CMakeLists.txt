@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.9)
-project(dodutils)
+project(dod)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_FLAGS "-O3 -g -pedantic-errors -Wall -Wextra -Wshadow -Wpointer-arith -Wcast-qual \

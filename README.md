@@ -1,4 +1,4 @@
-# dodutils
+# dod
 Tools to facilitate data-oriented design in C99.
 
 If you are new to data-oriented design, [this](https://github.com/dbartolini/data-oriented-design) is a good place to start.
@@ -26,15 +26,15 @@ The implementation tries to stick to the STL implementation unless otherwise spe
 ### Usage
 For more examples see `test_dodvec.c`.
 ```c
-dodvec_t *v = dodvec_new(int, 10);                        // Create vector of ints and reserve space for 10 ints
-for (int i = 0; i < 5; ++i)                             // Push back 5 ints
-  dodvec_push_back(v, &i);                               // >> {0, 1, 2, 3, 4}
-assert(*dodvec_at(v, 2) == 2);                           // Check element at pos 2 is 2
-dodvec_pop_back(v);                                      // Pop back >> {0, 1, 2, 3}
-dodvec_erase(v, 0);                                      // Erase at pos 0 >> {1, 2, 3}
-int vals[] = {501, 502, 503};                           // Insert range using array
-dodvec_insert_range(v, dodvec_front(v), vals, vals + 3);  // at front >> {501, 502, 503, 1, 2, 3}
-dodvec_free(v);                                          // free after use
+dodvec_t *v = dodvec_new(int, 10);                          // Create vector of ints and reserve space for 10 ints
+for (int i = 0; i < 5; ++i)                                 // Push back 5 ints
+  dodvec_push_back(v, &i);                                  // >> {0, 1, 2, 3, 4}
+assert(*dodvec_at(v, 2) == 2);                              // Check element at pos 2 is 2
+dodvec_pop_back(v);                                         // Pop back >> {0, 1, 2, 3}
+dodvec_erase(v, 0);                                         // Erase at pos 0 >> {1, 2, 3}
+int vals[] = {501, 502, 503};                               // Insert range using array
+dodvec_insert_range(v, dodvec_front(v), vals, vals + 3);    // at front >> {501, 502, 503, 1, 2, 3}
+dodvec_free(v);                                             // free after use
 ```
 
 
@@ -47,13 +47,13 @@ The implementation tries to stick to the STL implementation unless otherwise spe
 ### Usage
 For more examples see `test_dodbs.c`.
 ```c
-dodbs_t_decl(bs1, 16);           // Create bitset of length 16
-dodbs_init(bs1, 43690U);         // Initialize by value - 43690 == b1010101010101010
-dodbs_flipall(bs);               // Flip all bits
-assert(dodbs_any(bs) == true);   // Check if any bit is set
-assert(dodbs_none(bs) == false); // Check if no bit is set
-dodbs_setall(bs);                // Set all bits
-assert(dodbs_all(bs) == true);   // Check if all bits are set
+dodbs_t_decl(bs1, 16);              // Create bitset of length 16
+dodbs_init(bs1, 43690U);            // Initialize by value - 43690 == b1010101010101010
+dodbs_flipall(bs);                  // Flip all bits
+assert(dodbs_any(bs) == true);      // Check if any bit is set
+assert(dodbs_none(bs) == false);    // Check if no bit is set
+dodbs_setall(bs);                   // Set all bits
+assert(dodbs_all(bs) == true);      // Check if all bits are set
 ```
 
 
@@ -132,5 +132,5 @@ It also provides a convenient API where you don't have to always pass the length
 
 
 
-## dodbs.h - Generic array with value semantics
+## dodarr.h - Generic array with value semantics
 
