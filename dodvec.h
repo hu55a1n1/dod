@@ -3,6 +3,7 @@
 
 #include "dodbytes.h"
 
+// Constructor and destructor
 #define dodvec_new(t, n) dodvec_newl(sizeof(t), n)
 #define dodvec_free(v)                                                        \
   do {                                                                         \
@@ -11,6 +12,10 @@
     free(v);                                                                 \
   } while (0)
 #define dodvec_find(v, val) dodvec_findl(v, val, (v)->szmem)
+
+// Iterators
+#define dodvec_begin(v) dodvec_data(v)
+#define dodvec_end(v) (((v)->l == 0) ? dodvec_begin(v) : (dodvec_data(v) + ((v)->l * (v)->szmem)))
 
 // capacity
 #define dodvec_size(v) ((v)->l)
@@ -24,10 +29,8 @@
 // Element access
 #define dodvec_data(v) dodbytes_data((v)->b)
 #define dodvec_at(v, pos) (dodvec_data(v) + (pos * (v)->szmem))
-#define dodvec_front(v) dodvec_data(v)
-#define dodvec_back(v) (dodvec_data(v) + ((v)->l - 1) * (v)->szmem)
-#define dodvec_begin(v) dodvec_front(v)
-#define dodvec_end(v) (dodvec_data(v) + ((v)->l * (v)->szmem))
+#define dodvec_front(v) dodvec_begin(v)
+#define dodvec_back(v) (dodvec_end(v) == dodvec_begin(v) ? dodvec_front(v) : (dodvec_end(v) - (v)->szmem))
 
 // Modifiers
 #define dodvec_push_back(v, val) dodvec_push_backl(v, val, (v)->szmem)
