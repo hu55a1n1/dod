@@ -14,7 +14,7 @@
 
 // capacity
 #define dodvec_size(v) ((v)->l)
-//#define dodvec_max_size(v) // todo
+#define dodvec_max_size(v) (SIZE_MAX / (v)->szmem)
 #define dodvec_capacity(v) (dodbytes_capacity((v)->b) / (v)->szmem)
 #define dodvec_empty(v) ((v)->l == 0)
 #define dodvec_reserve(v, n) dodbytes_reserve(&(v)->b, (n) * (v)->szmem)
