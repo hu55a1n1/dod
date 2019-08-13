@@ -5,11 +5,17 @@
   t data[l]; \
   size_t len; \
 }
-#define ucarr_t_default() {.data = {0}, .len = 0}
+#define ucarr_t_init(l, ...) {.data = {__VA_ARGS__}, .len = l}
+#define ucarr_t_default() ucarr_t_init(0, 0)
 #define ucarr_t_decl(arr, t, l) ucarr_t(t, l) arr = ucarr_t_default()
 #define ucarr_t_decl_ptr(arr, t, l) \
   ucarr_t(t, l) *arr = memcpy(malloc(sizeof(*arr)), \
   &(ucarr_t(t, l))ucarr_t_default(), sizeof(*arr))
+#define ucarr_t_decl_array(arr, t, ...) \
+  ucarr_t(t, sizeof((t[]){__VA_ARGS__}) / sizeof(t)) arr = ucarr_t_init(sizeof((t[]){__VA_ARGS__}) / sizeof(t), __VA_ARGS__)
+#define ucarr_t_decl_ptr_array(arr, t, ...) \
+  ucarr_t(t, sizeof((t[]){__VA_ARGS__}) / sizeof(t)) *arr = memcpy(malloc(sizeof(*arr)), \
+  &(ucarr_t(t, sizeof((t[]){__VA_ARGS__}) / sizeof(t)))ucarr_t_init(sizeof((t[]){__VA_ARGS__}) / sizeof(t), __VA_ARGS__), sizeof(*arr))
 
 // Element access
 #define ucarr_at(arr, pos) ((pos >= (arr).len) ? NULL: ((arr).data + pos))
