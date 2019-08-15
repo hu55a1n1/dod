@@ -3,6 +3,8 @@ Tools to facilitate data-oriented design in C99.
 
 If you are new to data-oriented design, [this](https://github.com/dbartolini/data-oriented-design) is a good place to start.
 
+__Note: This library is still a WIP; using it in production isn't recommended until there is an official release.__
+
 This library provides a collection of tools that are used frequently in data-oriented design. It currently offers the following header-only utilities -
 * [dodbytes.h](#dodbytesh---byte-manipulation-utils) - Byte manipulation utils
 * [dodvec.h](#dodvech---a-feature-rich-generic-vector-implementation) - A feature-rich generic vector implementation
