@@ -3,22 +3,27 @@
 #include <assert.h>
 #include <stdio.h>
 
-#define ULL_BIN_STR "11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+#define ULL_BIN_STR                                                            \
+  "11111111111111111111111111111111111111111111111111111111111111111111111111" \
+  "111111111111111111111111111111111111111111111111111111"
 
-#define BS_ASSERT_SIZE(sz) do {\
-  dodbs_t_decl(bs##sz, sz);\
-  assert(sizeof(bs##sz.array) == (DODBS_ADJ_SZ(sz) * sizeof(dodbs_storage_t))); \
-} while (0)
+#define BS_ASSERT_SIZE(sz)                                                     \
+  do {                                                                         \
+    dodbs_t_decl(bs##sz, sz);                                                  \
+    assert(sizeof(bs##sz.array) ==                                             \
+           (DODBS_ADJ_SZ(sz) * sizeof(dodbs_storage_t)));                      \
+  } while (0)
 
-#define test_access_funcs(l, str, cnt, any, none, all) do { \
-  dodbs_t_decl(_bs_, l); \
-  dodbs_init_str(_bs_, str); \
-  assert(dodbs_count(_bs_) == cnt); \
-  assert(dodbs_size(_bs_) == DODBS_ARR_SZ(_bs_) * DODBS_T_BIT); \
-  assert(dodbs_any(_bs_) == any); \
-  assert(dodbs_none(_bs_) == none); \
-  assert(dodbs_all(_bs_) == all); \
-} while (0)
+#define test_access_funcs(l, str, cnt, any, none, all)                         \
+  do {                                                                         \
+    dodbs_t_decl(_bs_, l);                                                     \
+    dodbs_init_str(_bs_, str);                                                 \
+    assert(dodbs_count(_bs_) == cnt);                                          \
+    assert(dodbs_size(_bs_) == DODBS_ARR_SZ(_bs_) * DODBS_T_BIT);              \
+    assert(dodbs_any(_bs_) == any);                                            \
+    assert(dodbs_none(_bs_) == none);                                          \
+    assert(dodbs_all(_bs_) == all);                                            \
+  } while (0)
 
 static void test_size(void) {
   BS_ASSERT_SIZE(8);

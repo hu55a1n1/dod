@@ -28,7 +28,7 @@ int main(void) {
   clock_t begin = clock();
   test_doddict();
   clock_t end = clock();
-  double time_spent = (double) (end - begin) / CLOCKS_PER_SEC;
+  double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
   printf("Took %f secs...\n", time_spent);
   return 0;
 }

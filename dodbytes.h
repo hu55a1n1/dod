@@ -8,34 +8,32 @@
 
 #define dodbytes_free(b) free(b)
 #define dodbytes_write(b, vptr) dodbytes_writel_(b, vptr, sizeof(*vptr))
-#define dodbytes_read(b, pos, vptr)                                       \
-  dodbytes_readl_(b, pos, vptr, sizeof(*vptr))
-#define dodbytes_print(b, f)                                                \
+#define dodbytes_read(b, pos, vptr) dodbytes_readl_(b, pos, vptr, sizeof(*vptr))
+#define dodbytes_print(b, f)                                                   \
   do {                                                                         \
-    for (size_t i = 0; i < (b)->sz; i++)                                     \
-      fprintf(f, "%02x", (b)->data[i]);                                    \
-    fprintf(f, "\n");                                                        \
+    for (size_t i = 0; i < (b)->sz; i++)                                       \
+      fprintf(f, "%02x", (b)->data[i]);                                        \
+    fprintf(f, "\n");                                                          \
   } while (0)
 #define dodbytes_size(b) ((b)->sz)
-#define dodbytes_set_size(b, nsz)                                           \
+#define dodbytes_set_size(b, nsz)                                              \
   do {                                                                         \
-    (b)->sz = nsz;                                                         \
+    (b)->sz = nsz;                                                             \
   } while (0)
 #define dodbytes_capacity(b) ((b)->cap)
 #define dodbytes_data(b) ((b)->data)
-#define dodbytes_accomodate(bp, inc)                                        \
-  dodbytes_reserve(bp, (*bp)->sz + inc)
+#define dodbytes_accomodate(bp, inc) dodbytes_reserve(bp, (*bp)->sz + inc)
 #define dodbytes_shrink_to_fit(b) dodbytes_shrink(b, (b)->sz)
 #define dodbytes_clear(b) ((b)->sz = 0)
 
 typedef struct {
-    size_t sz;
-    size_t cap;
-    unsigned char data[];
+  size_t sz;
+  size_t cap;
+  unsigned char data[];
 } dodbytes_t;
 
 static inline dodbytes_t *dodbytes_new(size_t sz) {
-  dodbytes_t *cb = (dodbytes_t *) malloc(sizeof(*cb) + sz);
+  dodbytes_t *cb = (dodbytes_t *)malloc(sizeof(*cb) + sz);
   if (!cb) {
     free(cb);
     return NULL;
@@ -55,7 +53,7 @@ static inline dodret_t dodbytes_reserve(dodbytes_t **b, size_t nsz) {
   while (ncap < nsz) {
     ncap *= 2;
   }
-  dodbytes_t *b_ = (dodbytes_t *) realloc(*b, sizeof(*b_) + ncap);
+  dodbytes_t *b_ = (dodbytes_t *)realloc(*b, sizeof(*b_) + ncap);
   if (!b_)
     return DODRET_ENOMEM;
   *b = b_;
@@ -63,7 +61,8 @@ static inline dodret_t dodbytes_reserve(dodbytes_t **b, size_t nsz) {
   return DODRET_OK;
 }
 
-static inline dodret_t dodbytes_writel_(dodbytes_t **b, const void *v, size_t l) {
+static inline dodret_t dodbytes_writel_(dodbytes_t **b, const void *v,
+                                        size_t l) {
   if (dodbytes_accomodate(b, l) != 0)
     return DODRET_ENOMEM;
   (v != NULL) ? memcpy((*b)->data + (*b)->sz, v, l)
@@ -125,7 +124,7 @@ static inline dodret_t dodbytes_shrink(dodbytes_t **b, size_t nsz) {
     return DODRET_OK;
   else if (nsz > (*b)->cap || nsz < (*b)->sz)
     return DODRET_EPARAM;
-  dodbytes_t *b_ = (dodbytes_t *) realloc(*b, sizeof(*b_) + nsz);
+  dodbytes_t *b_ = (dodbytes_t *)realloc(*b, sizeof(*b_) + nsz);
   if (!b_)
     return DODRET_ENOMEM;
   *b = b_;
